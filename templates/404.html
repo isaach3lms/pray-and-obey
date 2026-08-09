@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Page not found | {{ site.name }}{% endblock %}
+
+{% block content %}
+<section class="centered">
+  <div class="centered__inner">
+    <img class="centered__mark" src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
+    <span class="eyebrow">404</span>
+    <h1 style="font-size:clamp(2rem,4vw,3rem)">This page is not here.</h1>
+    <p>The link may have moved or expired. Start from the home page, or go straight to the funding application.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+      <a class="btn btn--navy" href="/">Return home</a>
+      <a class="btn btn--ghost" href="/apply">Apply for funding</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

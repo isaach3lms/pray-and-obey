@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Application received | {{ site.name }}{% endblock %}
+
+{% block content %}
+<section class="centered">
+  <div class="centered__inner">
+    <img class="centered__mark" src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
+    <span class="eyebrow">Application received</span>
+    <h1 style="font-size:clamp(2rem,4vw,3rem)">Thank you. We have your application.</h1>
+    <p>Our fund reviews every submission. Most applicants hear back within several weeks. We may follow up by email with a few clarifying questions.</p>
+    <a class="btn btn--navy btn--lg" href="/">Return home</a>
+  </div>
+</section>
+{% endblock %}

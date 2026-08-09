@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.name }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ site.meta_description }}{% endblock %}">
+
+  <meta property="og:site_name" content="{{ site.name }}">
+  <meta property="og:title" content="{% block og_title %}{{ site.name }}{% endblock %}">
+  <meta property="og:description" content="{{ site.meta_description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{ url_for('static', filename='img/logo-full.png', _external=True) }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="{{ url_for('static', filename='img/logo-mark.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="{{ site.name }} home">
+        <img src="{{ url_for('static', filename='img/logo-nav.png') }}" alt="{{ site.name }}" width="260" height="101">
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        {% for item in nav %}
+        <a href="{{ item.href }}">{{ item.label }}</a>
+        {% endfor %}
+      </nav>
+
+      <div class="nav__actions">
+        <a class="btn btn--ghost nav__contact" href="mailto:{{ site.email }}">Contact</a>
+        <a class="btn btn--primary" href="/apply">Apply for funding</a>
+      </div>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="mobile-menu" hidden>
+      {% for item in nav %}
+      <a href="{{ item.href }}">{{ item.label }}</a>
+      {% endfor %}
+      <a href="mailto:{{ site.email }}">Contact</a>
+      <a class="btn btn--primary btn--block" href="/apply">Apply for funding</a>
+    </div>
+  </header>
+
+  <main id="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+        <div class="flash flash--{{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="{{ url_for('static', filename='img/logo-light.png') }}" alt="{{ site.name }}" width="230" height="90" class="footer__logo">
+        <p class="footer__tagline">{{ site.tagline }}</p>
+      </div>
+
+      <div class="footer__col">
+        <h3>Explore</h3>
+        <ul>
+          {% for item in footer.explore %}
+          <li><a href="{{ item.href }}">{{ item.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h3>Apply</h3>
+        <ul>
+          {% for item in footer.apply %}
+          <li><a href="{{ item.href }}">{{ item.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h3>Connect</h3>
+        <ul>
+          <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          {% for s in site.socials %}
+          <li><a href="{{ s.url }}" rel="noopener">{{ s.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <p>&copy; {{ current_year }} {{ site.name }}. All rights reserved.</p>
+      <p>A private family fund.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
