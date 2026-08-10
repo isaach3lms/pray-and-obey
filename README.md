@@ -107,8 +107,11 @@ Defined in `static/css/styles.css` under `:root`.
 | `--navy` | `#0D2D5C` | Headings, dark bands, primary structure |
 | `--gold` | `#D4A017` | Rules, icon strokes, section markers. Text only on navy. |
 | `--flame` | `#C8102E` | Accent word, eyebrows, primary buttons |
-| `--cream` | `#F7F2E6` | Page background |
-| `--white` | `#FFFFFF` | Cards, alternating sections |
+| `--white` | `#FFFFFF` | Page background, primary sections |
+| `--tint` | `#F2F5FA` | Light blue surface, derived from navy. Alternating sections and card fills. |
+| `--cream` | `#F7F2E6` | Retained in the palette for the logo lockup. No longer used as a page background. |
+
+Section backgrounds are white or navy only. `--tint` provides separation between adjacent light sections without introducing a third color family. Card surfaces invert automatically: white cards on tinted sections, tinted cards on white sections.
 
 Gold measures 2.13:1 against cream, which fails WCAG for text. It is used structurally on light backgrounds and as text only on navy, where it measures 5.71:1.
 
