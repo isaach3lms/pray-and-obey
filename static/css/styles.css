@@ -309,6 +309,32 @@ ul { margin: 0; padding: 0; list-style: none; }
 .section--tint .card,
 .section--tint .pillar,
 .section--tint .faq__item { background: var(--white); }
+
+/* Surfaces on navy sections: translucent white, so they read as raised
+   panels rather than a second flat color. */
+.section--navy .card,
+.section--navy .pillar,
+.section--navy .faq__item {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line-dark);
+}
+.section--navy .pillar p { color: rgba(255, 255, 255, 0.76); }
+
+.section--navy .faq__item[open] {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--gold);
+}
+.section--navy .faq__item summary { color: var(--white); }
+.section--navy .faq__answer { color: rgba(255, 255, 255, 0.78); }
+.section--navy .faq__sign::before,
+.section--navy .faq__sign::after { background: var(--white); }
+
+/* Navy buttons disappear on navy. Invert them. */
+.section--navy .btn--navy { background: var(--white); color: var(--navy); }
+.section--navy .btn--navy:hover { background: var(--tint); color: var(--navy); }
+
+/* Mission photo needs a rim on navy so it does not bleed into the section. */
+.section--navy .frame { box-shadow: 0 26px 64px rgba(0, 0, 0, .32); }
 .section--navy { background: var(--navy); color: rgba(255,255,255,.82); }
 .section--navy h2, .section--navy h3 { color: var(--white); }
 
