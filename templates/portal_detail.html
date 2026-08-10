@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}{{ a.legal_name }} | Portal | {{ site.name }}{% endblock %}
+
+{% macro row(label, value) %}
+{% if value %}
+<div class="detail__row">
+  <div class="detail__label">{{ label }}</div>
+  <div class="detail__value">{{ value }}</div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro block(label, value) %}
+{% if value %}
+<div class="detail__block">
+  <div class="detail__label">{{ label }}</div>
+  <p>{{ value }}</p>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% block content %}
+<section class="page-head page-head--portal">
+  <div class="wrap">
+    <div class="portal__bar">
+      <div>
+        <a class="backlink" href="{{ url_for('portal') }}">Back to all applications</a>
+        <h1>{{ a.legal_name }}</h1>
+        <p>Submitted {{ a.submitted_at.strftime('%B %d, %Y at %H:%M UTC') }}</p>
+      </div>
+      <div class="portal__user">
+        <span>{{ current_user.name }}</span>
+        <a class="btn btn--outline-light" href="{{ url_for('portal_logout') }}">Sign out</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight section--white">
+  <div class="wrap">
+    <div class="detail">
+
+      <!-- Status panel -->
+      <aside class="detail__side">
+        <form method="post" action="{{ url_for('portal_update_status', app_id=a.id) }}" class="status-card">
+          <span class="detail__label">Current status</span>
+          <span class="pill pill--{{ a.tone }} pill--lg">{{ a.status }}</span>
+
+          {% if a.status_changed_at %}
+          <p class="status-card__meta">
+            Changed {{ a.status_changed_at.strftime('%b %d, %Y') }}{% if a.status_changed_by %} by {{ a.status_changed_by }}{% endif %}
+          </p>
+          {% endif %}
+
+          <label class="detail__label detail__label--mt" for="status">Set status</label>
+          <div class="status-options">
+            {% for st in statuses %}
+            <label class="status-option status-option--{{ st|lower }}">
+              <input type="radio" name="status" value="{{ st }}" {% if a.status == st %}checked{% endif %}>
+              <span>{{ st }}</span>
+            </label>
+            {% endfor %}
+          </div>
+
+          <label class="detail__label detail__label--mt" for="reviewer_notes">Internal notes</label>
+          <textarea id="reviewer_notes" name="reviewer_notes" placeholder="Visible to team members only.">{{ a.reviewer_notes or '' }}</textarea>
+
+          <button type="submit" class="btn btn--primary btn--block">Save</button>
+        </form>
+
+        <div class="status-card status-card--quiet">
+          <span class="detail__label">Quick facts</span>
+          <ul class="factlist">
+            <li><span>Requested</span><strong>{{ a.amount_requested or '-' }}</strong></li>
+            <li><span>Total budget</span><strong>{{ a.total_project_budget or '-' }}</strong></li>
+            <li><span>Budget total</span><strong>{{ a.budget_grand_total or '-' }}</strong></li>
+            <li><span>Org type</span><strong>{{ a.org_type or '-' }}</strong></li>
+            <li><span>Certified</span><strong>{{ 'Yes' if a.certified else 'No' }}</strong></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Application body -->
+      <div class="detail__main">
+
+        <h2 class="detail__heading">1. Organization and request</h2>
+        {{ row('Legal name', a.legal_name) }}
+        {{ row('Doing business as', a.dba_name) }}
+        {{ row('Federal EIN', a.ein) }}
+        {{ row('Year founded', a.year_founded) }}
+        {{ row('Website', a.org_website) }}
+        {{ row('Service area', a.service_area) }}
+        {{ row('Contact', a.contact_name) }}
+        {{ row('Email', a.email) }}
+        {{ row('Phone', a.phone) }}
+        {{ row('Mailing address', a.mailing_address) }}
+        {{ row('Organization type', a.org_type) }}
+        {{ row('Amount requested', a.amount_requested) }}
+        {{ row('Total project budget', a.total_project_budget) }}
+        {{ row('Grant period', (a.start_date or '?') ~ ' to ' ~ (a.end_date or '?')) }}
+        {{ block('Mission and principal activities', a.mission_activities) }}
+        {{ block('How the ministry shares the Gospel', a.gospel_sharing) }}
+        {{ block('Project summary', a.project_summary) }}
+        {{ block('Who will be served', a.who_served) }}
+
+        <h2 class="detail__heading">2. Mission alignment and Bible distribution</h2>
+        {{ row('Priorities selected', a.priorities) }}
+        {{ block('Strongest fit', a.strongest_fit) }}
+        {{ block('Activities, timeline, responsible person', a.activities_timeline) }}
+        {{ block('Use of requested funds', a.funds_use) }}
+        {{ row('Willing to distribute Bibles', a.bible_willingness) }}
+        {{ block('Proposed distribution', a.bible_description) }}
+        {{ block('Scripture engagement and follow-up', a.scripture_engagement) }}
+        {{ row('Assistance requested', a.assistance) }}
+
+        <h2 class="detail__heading">3. Outcomes, finances, and certification</h2>
+        {{ block('Expected results and measurement', a.expected_results) }}
+        {{ block('Sustainability after the grant', a.sustainability) }}
+        {{ block('Risks and safeguarding', a.risks) }}
+
+        {% if a.budget_lines %}
+        <div class="detail__block">
+          <div class="detail__label">Budget lines</div>
+          <pre class="budget-lines">{{ a.budget_lines }}</pre>
+        </div>
+        {% endif %}
+
+        {{ row('Budget total', a.budget_grand_total) }}
+        {{ row('Attachments confirmed ready', a.attachments) }}
+        {{ row('Authorized representative', a.authorized_rep) }}
+        {{ row('Title', a.rep_title) }}
+        {{ row('Signature', a.signature) }}
+        {{ row('Certified', 'Yes' if a.certified else 'No') }}
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

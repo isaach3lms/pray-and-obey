@@ -35,7 +35,7 @@
       </nav>
 
       <div class="nav__actions">
-        <a class="btn btn--ghost nav__contact" href="mailto:{{ site.email }}">Contact</a>
+        <a class="btn btn--ghost nav__contact" href="{{ url_for('portal') }}">Portal</a>
         <a class="btn btn--primary" href="/apply">Apply for funding</a>
       </div>
 
@@ -48,7 +48,7 @@
       {% for item in nav %}
       <a href="{{ item.href }}">{{ item.label }}</a>
       {% endfor %}
-      <a href="mailto:{{ site.email }}">Contact</a>
+      <a href="{{ url_for('portal') }}">Portal</a>
       <a class="btn btn--primary btn--block" href="/apply">Apply for funding</a>
     </div>
   </header>

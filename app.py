@@ -22,6 +22,22 @@ from flask import (
     flash,
     abort,
 )
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+
+from models import (
+    STATUSES,
+    Application,
+    User,
+    database_uri,
+    db,
+    utcnow,
+)
 
 # ---------------------------------------------------------------------------
 # App config
@@ -29,6 +45,24 @@ from flask import (
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-change-me")
+app.config["SQLALCHEMY_DATABASE_URI"] = database_uri()
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FLASK_ENV") != "development"
+
+db.init_app(app)
+
+login_manager = LoginManager(app)
+login_manager.login_view = "portal_login"
+login_manager.login_message = "Please sign in to view the portal."
+login_manager.session_protection = "strong"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(User, int(user_id))
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 MAIL_FROM = os.environ.get("MAIL_FROM", "Pray and Obey <apply@prayandobey.org>")
@@ -556,6 +590,54 @@ def apply_for_funding():
                 "Certified": "Yes" if form_data.get("certify") else "No",
                 "Submitted": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             }
+            record = Application(
+                legal_name=form_data.get("legal_name"),
+                dba_name=form_data.get("dba_name"),
+                ein=form_data.get("ein"),
+                year_founded=form_data.get("year_founded"),
+                org_website=form_data.get("org_website"),
+                service_area=form_data.get("service_area"),
+                contact_name=form_data.get("contact_name"),
+                email=form_data.get("email"),
+                phone=form_data.get("phone"),
+                mailing_address=form_data.get("mailing_address"),
+                org_type=form_data.get("org_type"),
+                mission_activities=form_data.get("mission_activities"),
+                gospel_sharing=form_data.get("gospel_sharing"),
+                amount_requested=form_data.get("amount_requested"),
+                total_project_budget=form_data.get("total_project_budget"),
+                start_date=form_data.get("start_date"),
+                end_date=form_data.get("end_date"),
+                project_summary=form_data.get("project_summary"),
+                who_served=form_data.get("who_served"),
+                priorities=", ".join(request.form.getlist("priorities")),
+                strongest_fit=form_data.get("strongest_fit"),
+                activities_timeline=form_data.get("activities_timeline"),
+                funds_use=form_data.get("funds_use"),
+                bible_willingness=form_data.get("bible_willingness"),
+                bible_description=form_data.get("bible_description"),
+                scripture_engagement=form_data.get("scripture_engagement"),
+                assistance=", ".join(request.form.getlist("assistance")),
+                expected_results=form_data.get("expected_results"),
+                sustainability=form_data.get("sustainability"),
+                risks=form_data.get("risks"),
+                budget_lines="\n".join(budget_rows),
+                budget_grand_total=form_data.get("budget_grand_total"),
+                attachments=", ".join(request.form.getlist("attachments")),
+                authorized_rep=form_data.get("authorized_rep"),
+                rep_title=form_data.get("rep_title"),
+                signature=form_data.get("signature"),
+                certified=bool(form_data.get("certify")),
+            )
+            try:
+                db.session.add(record)
+                db.session.commit()
+            except Exception as exc:  # noqa: BLE001
+                db.session.rollback()
+                app.logger.error("Could not save application: %s", exc)
+
+            # Email remains the backup path. A database write failure must not
+            # cost the applicant their submission.
             send_application_email(payload)
             return redirect(url_for("thank_you"))
 
@@ -578,9 +660,153 @@ def thank_you():
     return render_template("thank_you.html")
 
 
+# ---------------------------------------------------------------------------
+# Portal
+# ---------------------------------------------------------------------------
+
+
+@app.route("/portal/login", methods=["GET", "POST"])
+def portal_login():
+    if current_user.is_authenticated:
+        return redirect(url_for("portal"))
+
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        user = db.session.query(User).filter(User.email == email).first()
+
+        if user and user.is_active and user.check_password(password):
+            login_user(user, remember=False)
+            user.last_login_at = utcnow()
+            db.session.commit()
+            nxt = request.args.get("next")
+            # Only allow relative redirects, never an external host.
+            if nxt and nxt.startswith("/") and not nxt.startswith("//"):
+                return redirect(nxt)
+            return redirect(url_for("portal"))
+
+        # Same message either way, so the form cannot be used to discover
+        # which email addresses have accounts.
+        flash("That email and password combination was not recognized.", "error")
+
+    return render_template("portal_login.html")
+
+
+@app.route("/portal/logout")
+@login_required
+def portal_logout():
+    logout_user()
+    return redirect(url_for("portal_login"))
+
+
+@app.route("/portal")
+@login_required
+def portal():
+    status_filter = request.args.get("status", "All")
+    query = db.session.query(Application)
+    if status_filter in STATUSES:
+        query = query.filter(Application.status == status_filter)
+
+    applications = query.order_by(Application.submitted_at.desc()).all()
+
+    counts = {"All": db.session.query(Application).count()}
+    for st in STATUSES:
+        counts[st] = db.session.query(Application).filter(Application.status == st).count()
+
+    return render_template(
+        "portal_list.html",
+        applications=applications,
+        statuses=STATUSES,
+        counts=counts,
+        status_filter=status_filter,
+    )
+
+
+@app.route("/portal/application/<int:app_id>")
+@login_required
+def portal_application(app_id):
+    record = db.session.get(Application, app_id)
+    if record is None:
+        abort(404)
+    return render_template(
+        "portal_detail.html",
+        a=record,
+        statuses=STATUSES,
+    )
+
+
+@app.route("/portal/application/<int:app_id>/status", methods=["POST"])
+@login_required
+def portal_update_status(app_id):
+    record = db.session.get(Application, app_id)
+    if record is None:
+        abort(404)
+
+    new_status = request.form.get("status")
+    notes = (request.form.get("reviewer_notes") or "").strip()
+
+    if new_status in STATUSES and new_status != record.status:
+        record.status = new_status
+        record.status_changed_at = utcnow()
+        record.status_changed_by = current_user.name
+        flash(f"Status set to {new_status}.", "success")
+    elif new_status not in STATUSES:
+        flash("That status is not recognized.", "error")
+
+    if notes != (record.reviewer_notes or ""):
+        record.reviewer_notes = notes
+        flash("Notes saved.", "success")
+
+    db.session.commit()
+    return redirect(url_for("portal_application", app_id=app_id))
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+
+@app.cli.command("init-db")
+def init_db():
+    """Create database tables. Safe to run more than once."""
+    db.create_all()
+    print("Tables created.")
+
+
+@app.cli.command("create-user")
+def create_user():
+    """Create a portal user. Prompts for name, email, and password."""
+    import getpass
+
+    name = input("Name: ").strip()
+    email = input("Email: ").strip().lower()
+    password = getpass.getpass("Password: ")
+    confirm = getpass.getpass("Confirm password: ")
+
+    if password != confirm:
+        print("Passwords do not match.")
+        return
+    if len(password) < 12:
+        print("Use at least 12 characters.")
+        return
+    if db.session.query(User).filter(User.email == email).first():
+        print("A user with that email already exists.")
+        return
+
+    user = User(name=name, email=email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    print(f"Created portal user {email}.")
+
+
 @app.errorhandler(404)
 def not_found(_e):
     return render_template("404.html"), 404
+
+
+with app.app_context():
+    db.create_all()
 
 
 if __name__ == "__main__":

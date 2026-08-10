@@ -11,6 +11,8 @@ Built by Between Sundays Agency.
 | Layer | Choice |
 |---|---|
 | Framework | Flask 3.0.3 + Jinja2 |
+| Database | SQLAlchemy 2.x, SQLite locally, Postgres in production |
+| Auth | Flask-Login |
 | Server | Gunicorn |
 | Hosting | Render (auto-deploy from GitHub `main`) |
 | Email | Resend HTTP API, port 443 |
@@ -54,6 +56,8 @@ Set these in the Render dashboard for production. Never commit `.env`.
 | `MAIL_FROM` | Verified sender, e.g. `Pray and Obey <apply@prayandobey.org>` |
 | `MAIL_TO` | Where applications are delivered |
 | `FORM_MIN_SECONDS` | Minimum seconds before a submission is accepted. Default 8. |
+| `DATABASE_URL` | Supplied by Render. Leave blank locally to use SQLite. |
+| `FLASK_ENV` | Set to `development` locally so session cookies work without HTTPS. |
 
 If `RESEND_API_KEY` is absent, the app logs the application payload instead of sending. Nothing is lost during local development.
 
@@ -213,3 +217,7 @@ Resend also requires DKIM and SPF records on the sending domain. Add those from 
 - [ ] Social URLs in `SITE["socials"]` confirmed live
 - [ ] Custom domain connected, HTTPS active
 - [ ] Repo kept private
+- [ ] Postgres instance provisioned on Render
+- [ ] At least two portal accounts created, one per team member
+- [ ] Portal login tested over HTTPS on the live domain
+- [ ] Data retention decision made for stored applications

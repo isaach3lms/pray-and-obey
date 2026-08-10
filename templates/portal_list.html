@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Applications | Portal | {{ site.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head page-head--portal">
+  <div class="wrap">
+    <div class="portal__bar">
+      <div>
+        <span class="eyebrow eyebrow--start eyebrow--light">Team portal</span>
+        <h1>Grant applications.</h1>
+      </div>
+      <div class="portal__user">
+        <span>{{ current_user.name }}</span>
+        <a class="btn btn--outline-light" href="{{ url_for('portal_logout') }}">Sign out</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight section--white">
+  <div class="wrap">
+
+    <div class="filters">
+      <a class="filter {% if status_filter not in statuses %}is-active{% endif %}"
+         href="{{ url_for('portal') }}">All <span>{{ counts['All'] }}</span></a>
+      {% for st in statuses %}
+      <a class="filter filter--{{ st|lower }} {% if status_filter == st %}is-active{% endif %}"
+         href="{{ url_for('portal', status=st) }}">{{ st }} <span>{{ counts[st] }}</span></a>
+      {% endfor %}
+    </div>
+
+    {% if applications %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Organization</th>
+            <th>Contact</th>
+            <th>Requested</th>
+            <th>Submitted</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in applications %}
+          <tr onclick="window.location='{{ url_for('portal_application', app_id=a.id) }}'">
+            <td>
+              <a class="table__link" href="{{ url_for('portal_application', app_id=a.id) }}">{{ a.legal_name }}</a>
+              {% if a.service_area %}<span class="table__sub">{{ a.service_area }}</span>{% endif %}
+            </td>
+            <td>
+              {{ a.contact_name or '-' }}
+              {% if a.email %}<span class="table__sub">{{ a.email }}</span>{% endif %}
+            </td>
+            <td>{{ a.amount_requested or '-' }}</td>
+            <td>{{ a.submitted_at.strftime('%b %d, %Y') }}</td>
+            <td><span class="pill pill--{{ a.tone }}">{{ a.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty">
+      <h2>No applications here yet.</h2>
+      <p>{% if status_filter in statuses %}Nothing is currently marked {{ status_filter|lower }}.{% else %}Applications submitted through the public form will appear on this page.{% endif %}</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}
