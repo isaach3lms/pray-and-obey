@@ -176,7 +176,7 @@ PROCESS = {
         },
         {
             "number": "03",
-            "title": "Quiet review",
+            "title": "Review",
             "body": "Our fund reviews every submission. We may follow up by email with a few clarifying questions.",
         },
         {
