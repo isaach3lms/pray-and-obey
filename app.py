@@ -172,7 +172,7 @@ PROCESS = {
         {
             "number": "02",
             "title": "Submit your application",
-            "body": "Complete the form. Most organizations finish it in about 15 to 20 minutes.",
+            "body": "Complete the form. Plan for about 30 minutes and have your project budget ready.",
         },
         {
             "number": "03",
@@ -261,8 +261,8 @@ CLOSING_CTA = {
     "eyebrow": "Take the next step",
     "headline": "Tell us about the work you are already doing.",
     "body": (
-        "If your mission aligns with our focus areas, we would like to hear from you. The application "
-        "takes most organizations about 15 to 20 minutes."
+        "If your mission aligns with our focus areas, we would like to hear from you. Plan for about "
+        "30 minutes and have your project budget and financial documents ready."
     ),
     "primary_cta": {"label": "Apply for funding", "href": "/apply"},
     "secondary_cta": {"label": "Read the FAQ", "href": "/#faq"},
@@ -285,36 +285,87 @@ FOOTER = {
 # ---------------------------------------------------------------------------
 
 ORG_TYPES = [
-    "501(c)(3) nonprofit",
+    "501(c)(3) public charity",
     "Church",
-    "Fiscally sponsored ministry",
-    "International NGO",
+    "Fiscal sponsor",
+    "International ministry",
     "Other",
 ]
 
-FUNDING_TYPES = [
-    "One-time project",
-    "Ongoing operational support",
-    "Both",
+PRIORITIES = [
+    "Proclaiming the Gospel",
+    "Strengthening fathers and families",
+    "Serving vulnerable people",
+    "Christian media or education",
+    "Global outreach",
+    "Bible / Scripture distribution",
 ]
 
-AMOUNT_RANGES = [
-    "Under $5,000",
-    "$5,000 to $15,000",
-    "$15,000 to $50,000",
-    "Over $50,000",
-    "Not sure yet",
+BIBLE_WILLINGNESS = [
+    "Yes, central activity",
+    "Yes, supporting activity",
+    "Willing with resources or training",
+    "No",
 ]
 
-FOCUS_CHOICES = [a["title"] for a in FOCUS["areas"]]
+ASSISTANCE_TYPES = [
+    "Funding",
+    "Bibles",
+    "Translation support",
+    "Training",
+    "Distribution partner",
+    "Other",
+]
 
+ATTACHMENTS = [
+    "Tax-exempt or church documentation",
+    "Most recent financial statement",
+    "Current operating budget",
+    "Project budget (if needed)",
+    "Board member list",
+    "Safeguarding policy (if applicable)",
+]
+
+BUDGET_ROWS = 5
+
+CERTIFICATION_TEXT = (
+    "I certify that this application and its attachments are accurate and complete; "
+    "any grant funds will be used only for the approved charitable purpose; and material "
+    "changes will be disclosed promptly. Submission does not guarantee funding."
+)
+
+# (field name, label shown in the validation message)
 REQUIRED_FIELDS = [
-    ("org_name", "Organization name"),
-    ("contact_name", "Contact name"),
-    ("email", "Email address"),
+    # Section 1: organization and request
+    ("legal_name", "Legal organization name"),
+    ("ein", "Federal EIN"),
+    ("service_area", "Primary service area"),
+    ("contact_name", "Primary contact and title"),
+    ("email", "Email"),
+    ("phone", "Phone"),
+    ("mailing_address", "Mailing address"),
     ("org_type", "Organization type"),
-    ("mission", "Mission statement"),
-    ("use_of_funds", "Use of funds"),
+    ("mission_activities", "Ministry mission and principal activities"),
+    ("gospel_sharing", "How your ministry shares the Gospel"),
+    ("amount_requested", "Amount requested"),
+    ("start_date", "Proposed start date"),
+    ("end_date", "Proposed end date"),
+    ("project_summary", "Summary of the project or request"),
+    ("who_served", "Who will be served"),
+    # Section 2: mission alignment and Bible distribution
+    ("strongest_fit", "Strongest priority fit"),
+    ("activities_timeline", "Main activities, timeline, and person responsible"),
+    ("funds_use", "How the requested funds will be used"),
+    ("bible_willingness", "Willingness to distribute Bibles or Scripture"),
+    ("bible_description", "Proposed Bible or Scripture distribution"),
+    ("scripture_engagement", "How recipients will engage with Scripture"),
+    # Section 3: outcomes, finances, and certification
+    ("expected_results", "Expected results and how you will measure them"),
+    ("sustainability", "How the work continues after the grant ends"),
+    ("authorized_rep", "Authorized representative"),
+    ("rep_title", "Representative title"),
+    ("signature", "Signature"),
+    ("certify", "Certification agreement"),
 ]
 
 
@@ -330,21 +381,31 @@ def send_application_email(payload: dict) -> bool:
         app.logger.info(json.dumps(payload, indent=2))
         return False
 
-    rows = "".join(
-        f"<tr>"
-        f"<td style='padding:8px 14px;border-bottom:1px solid #e6e2d6;"
-        f"font-family:Arial,sans-serif;font-size:13px;color:#0D2D5C;"
-        f"font-weight:bold;vertical-align:top;white-space:nowrap;'>{k}</td>"
-        f"<td style='padding:8px 14px;border-bottom:1px solid #e6e2d6;"
-        f"font-family:Arial,sans-serif;font-size:13px;color:#222;'>{v or '-'}</td>"
-        f"</tr>"
-        for k, v in payload.items()
-    )
+    def row(k, v):
+        if k.startswith("--"):
+            label = k.strip("- ").title()
+            return (
+                f"<tr><td colspan='2' style='padding:18px 14px 8px;"
+                f"font-family:Arial,sans-serif;font-size:11px;letter-spacing:1.4px;"
+                f"text-transform:uppercase;color:#FFFFFF;background:#0D2D5C;"
+                f"font-weight:bold;'>{label}</td></tr>"
+            )
+        return (
+            f"<tr>"
+            f"<td style='padding:8px 14px;border-bottom:1px solid #DCE3EE;"
+            f"font-family:Arial,sans-serif;font-size:13px;color:#0D2D5C;"
+            f"font-weight:bold;vertical-align:top;width:38%;'>{k}</td>"
+            f"<td style='padding:8px 14px;border-bottom:1px solid #DCE3EE;"
+            f"font-family:Arial,sans-serif;font-size:13px;color:#222;'>{v or '-'}</td>"
+            f"</tr>"
+        )
+
+    rows = "".join(row(k, v) for k, v in payload.items())
     html = (
-        f"<div style='background:#F7F2E6;padding:24px;'>"
+        f"<div style='background:#F2F5FA;padding:24px;'>"
         f"<h2 style='font-family:Arial,sans-serif;color:#0D2D5C;margin:0 0 16px;'>"
         f"New funding application</h2>"
-        f"<table style='border-collapse:collapse;background:#fff;width:100%;max-width:640px;'>"
+        f"<table style='border-collapse:collapse;background:#fff;width:100%;max-width:720px;'>"
         f"{rows}</table></div>"
     )
 
@@ -359,7 +420,7 @@ def send_application_email(payload: dict) -> bool:
                 "from": MAIL_FROM,
                 "to": [MAIL_TO],
                 "reply_to": payload.get("Email", MAIL_TO),
-                "subject": f"Funding application: {payload.get('Organization', 'Unknown')}",
+                "subject": f"Grant application: {payload.get('Legal organization name', 'Unknown')}",
                 "html": html,
             },
             timeout=15,
@@ -442,23 +503,57 @@ def apply_for_funding():
         if missing:
             flash("Please complete these fields: " + ", ".join(missing), "error")
         else:
+            budget_rows = []
+            for i in range(BUDGET_ROWS):
+                desc = form_data.get(f"budget_desc_{i}", "")
+                total = form_data.get(f"budget_total_{i}", "")
+                req = form_data.get(f"budget_request_{i}", "")
+                if desc or total or req:
+                    budget_rows.append(f"{desc} | total {total or '-'} | requested {req or '-'}")
+
             payload = {
-                "Organization": form_data.get("org_name"),
+                "-- 1. ORGANIZATION AND REQUEST --": "",
+                "Legal organization name": form_data.get("legal_name"),
+                "Doing-business-as name": form_data.get("dba_name"),
+                "Federal EIN": form_data.get("ein"),
+                "Year founded": form_data.get("year_founded"),
                 "Website": form_data.get("org_website"),
-                "Organization type": form_data.get("org_type"),
-                "EIN or tax ID": form_data.get("ein"),
-                "Contact": form_data.get("contact_name"),
-                "Role": form_data.get("contact_role"),
+                "Primary service area": form_data.get("service_area"),
+                "Primary contact and title": form_data.get("contact_name"),
                 "Email": form_data.get("email"),
                 "Phone": form_data.get("phone"),
-                "Location served": form_data.get("location"),
-                "Focus areas": ", ".join(request.form.getlist("focus_areas")),
-                "Funding type": form_data.get("funding_type"),
-                "Amount requested": form_data.get("amount"),
-                "Mission": form_data.get("mission"),
-                "Use of funds": form_data.get("use_of_funds"),
-                "Track record": form_data.get("track_record"),
-                "How they heard": form_data.get("referral"),
+                "Mailing address": form_data.get("mailing_address"),
+                "Organization type": form_data.get("org_type"),
+                "Mission and principal activities": form_data.get("mission_activities"),
+                "How the ministry shares the Gospel": form_data.get("gospel_sharing"),
+                "Amount requested": form_data.get("amount_requested"),
+                "Total project budget": form_data.get("total_project_budget"),
+                "Proposed start date": form_data.get("start_date"),
+                "Proposed end date": form_data.get("end_date"),
+                "Project summary": form_data.get("project_summary"),
+                "Who will be served": form_data.get("who_served"),
+
+                "-- 2. MISSION ALIGNMENT AND BIBLE DISTRIBUTION --": "",
+                "Priorities selected": ", ".join(request.form.getlist("priorities")),
+                "Strongest fit": form_data.get("strongest_fit"),
+                "Activities, timeline, responsible person": form_data.get("activities_timeline"),
+                "Use of requested funds": form_data.get("funds_use"),
+                "Willing to distribute Bibles": form_data.get("bible_willingness"),
+                "Proposed distribution": form_data.get("bible_description"),
+                "Scripture engagement and follow-up": form_data.get("scripture_engagement"),
+                "Assistance requested": ", ".join(request.form.getlist("assistance")),
+
+                "-- 3. OUTCOMES, FINANCES, AND CERTIFICATION --": "",
+                "Expected results and measurement": form_data.get("expected_results"),
+                "Sustainability after the grant": form_data.get("sustainability"),
+                "Risks, safeguarding, legal, financial": form_data.get("risks"),
+                "Budget lines": "<br>".join(budget_rows) if budget_rows else "-",
+                "Budget total": form_data.get("budget_grand_total"),
+                "Attachments confirmed ready": ", ".join(request.form.getlist("attachments")),
+                "Authorized representative": form_data.get("authorized_rep"),
+                "Title": form_data.get("rep_title"),
+                "Signature (typed)": form_data.get("signature"),
+                "Certified": "Yes" if form_data.get("certify") else "No",
                 "Submitted": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             }
             send_application_email(payload)
@@ -467,9 +562,12 @@ def apply_for_funding():
     return render_template(
         "apply.html",
         org_types=ORG_TYPES,
-        funding_types=FUNDING_TYPES,
-        amount_ranges=AMOUNT_RANGES,
-        focus_choices=FOCUS_CHOICES,
+        priorities=PRIORITIES,
+        bible_willingness=BIBLE_WILLINGNESS,
+        assistance_types=ASSISTANCE_TYPES,
+        attachments=ATTACHMENTS,
+        budget_rows=range(BUDGET_ROWS),
+        certification_text=CERTIFICATION_TEXT,
         form_data=form_data,
         form_started=time.time(),
     )

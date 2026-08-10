@@ -827,6 +827,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+.checkgrid--3 { grid-template-columns: repeat(3, 1fr); }
 .checkgrid label {
   display: flex;
   align-items: flex-start;
@@ -842,7 +843,94 @@ ul { margin: 0; padding: 0; list-style: none; }
   transition: border-color .16s ease, background-color .16s ease;
 }
 .checkgrid label:hover { border-color: var(--gold); }
-.checkgrid input { accent-color: var(--flame); margin-top: 3px; }
+.checkgrid input { accent-color: var(--flame); margin-top: 3px; flex: 0 0 auto; }
+.checkgrid label:has(input:checked) {
+  border-color: var(--navy);
+  background: var(--white);
+  color: var(--navy);
+}
+
+/* Section subheads inside a fieldset */
+.subhead {
+  font-size: 0.95rem;
+  color: var(--navy);
+  margin: 34px 0 6px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.fieldset__note {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+  max-width: 62ch;
+}
+
+/* Grant budget table */
+.budget {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 18px 0 8px;
+}
+.budget__head,
+.budget__row,
+.budget__foot {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+}
+.budget__head span {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 11px 14px;
+}
+.budget__row input {
+  border: 0;
+  border-radius: 0;
+  background: var(--white);
+  font-family: var(--font);
+  font-size: 0.92rem;
+  color: var(--ink);
+  padding: 12px 14px;
+  width: 100%;
+}
+.budget__row input:focus {
+  outline: 2px solid var(--navy);
+  outline-offset: -2px;
+  background: var(--tint);
+}
+.budget__foot span,
+.budget__foot strong {
+  background: var(--tint);
+  padding: 13px 14px;
+  font-size: 0.88rem;
+  color: var(--navy);
+  font-weight: 700;
+}
+.budget__foot strong { text-align: left; }
+
+/* Certification */
+.certify {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--tint);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  cursor: pointer;
+  margin-bottom: 22px;
+}
+.certify input { accent-color: var(--flame); margin-top: 4px; flex: 0 0 auto; }
+.certify:has(input:checked) { border-color: var(--navy); background: var(--white); }
 
 .hp-field {
   position: absolute !important;
@@ -958,6 +1046,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 900px) {
+  .checkgrid--3 { grid-template-columns: 1fr 1fr; }
   .nav__links, .nav__actions { display: none; }
   .nav__toggle { display: block; }
   .nav__mobile { display: flex; }
@@ -982,7 +1071,13 @@ ul { margin: 0; padding: 0; list-style: none; }
   .card--wide { grid-column: span 1; }
   .pillars { grid-template-columns: 1fr; }
   .field-row { grid-template-columns: 1fr; }
-  .checkgrid { grid-template-columns: 1fr; }
+  .checkgrid--3 { grid-template-columns: 1fr; }
+  .checkgrid,
+  .checkgrid--3 { grid-template-columns: 1fr; }
+  .budget__head { display: none; }
+  .budget__row,
+  .budget__foot { grid-template-columns: 1fr; }
+  .budget__row { padding-bottom: 1px; }
   .footer__inner { grid-template-columns: 1fr; }
   .hero__ctas .btn { width: 100%; }
   .frame,

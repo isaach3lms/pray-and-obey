@@ -1,14 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Apply for funding | {{ site.name }}{% endblock %}
-{% block description %}Submit a funding application to Pray and Obey Ministries. Most organizations finish the form in about 15 to 20 minutes.{% endblock %}
+{% block description %}Submit a grant application to Pray and Obey Ministries. Complete all required items and have your supporting documents ready.{% endblock %}
+
+{% macro line(name, label, required=false, hint='', type='text', placeholder='') %}
+<div class="field">
+  <label for="{{ name }}">{{ label }}{% if required %} <span class="req">*</span>{% endif %}</label>
+  {% if hint %}<span class="hint">{{ hint }}</span>{% endif %}
+  <input type="{{ type }}" id="{{ name }}" name="{{ name }}"
+         {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+         value="{{ form_data.get(name, '') }}">
+</div>
+{% endmacro %}
+
+{% macro area(name, label, required=false, hint='') %}
+<div class="field-row field-row--single">
+  <div class="field">
+    <label for="{{ name }}">{{ label }}{% if required %} <span class="req">*</span>{% endif %}</label>
+    {% if hint %}<span class="hint">{{ hint }}</span>{% endif %}
+    <textarea id="{{ name }}" name="{{ name }}">{{ form_data.get(name, '') }}</textarea>
+  </div>
+</div>
+{% endmacro %}
+
 
 {% block content %}
 
 <section class="page-head">
   <div class="wrap">
-    <span class="eyebrow eyebrow--start eyebrow--light">Funding application</span>
+    <span class="eyebrow eyebrow--start eyebrow--light">Grant application</span>
     <h1>Tell us about your work.</h1>
-    <p>Most organizations finish this form in about 15 to 20 minutes. Every submission is reviewed. We may follow up by email with a few clarifying questions.</p>
+    <p>Complete all required items marked with an asterisk. Plan for about 30 minutes, and have your project budget and financial documents nearby before you start.</p>
   </div>
 </section>
 
@@ -21,144 +42,190 @@
       <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
     </div>
 
+    <!-- ============ 1. ORGANIZATION AND REQUEST ============ -->
     <fieldset class="fieldset">
-      <legend>Organization</legend>
+      <legend>1. Organization and request</legend>
 
       <div class="field-row">
-        <div class="field">
-          <label for="org_name">Organization name <span class="req">*</span></label>
-          <input type="text" id="org_name" name="org_name" required value="{{ form_data.get('org_name', '') }}">
-        </div>
-        <div class="field">
-          <label for="org_website">Website</label>
-          <input type="url" id="org_website" name="org_website" placeholder="https://" value="{{ form_data.get('org_website', '') }}">
-        </div>
+        {{ line('legal_name', 'Legal organization name', true) }}
+        {{ line('dba_name', 'Doing-business-as name') }}
       </div>
 
       <div class="field-row">
+        {{ line('ein', 'Federal EIN', true, 'Enter your church or fiscal sponsor EIN if you are not separately incorporated.') }}
+        {{ line('year_founded', 'Year founded') }}
+      </div>
+
+      <div class="field-row">
+        {{ line('org_website', 'Website', false, '', 'url', 'https://') }}
+        {{ line('service_area', 'Primary service area', true, 'City, state, region, or country.') }}
+      </div>
+
+      <div class="field-row">
+        {{ line('contact_name', 'Primary contact and title', true) }}
+        {{ line('email', 'Email', true, '', 'email') }}
+      </div>
+
+      <div class="field-row">
+        {{ line('phone', 'Phone', true, '', 'tel') }}
+        {{ line('mailing_address', 'Mailing address', true) }}
+      </div>
+
+      <div class="field-row field-row--single">
         <div class="field">
-          <label for="org_type">Organization type <span class="req">*</span></label>
-          <select id="org_type" name="org_type" required>
-            <option value="">Select one</option>
+          <label>Organization type <span class="req">*</span></label>
+          <div class="checkgrid checkgrid--3">
             {% for t in org_types %}
-            <option value="{{ t }}" {% if form_data.get('org_type') == t %}selected{% endif %}>{{ t }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="field">
-          <label for="ein">EIN or tax ID</label>
-          <span class="hint">Leave blank if you are fiscally sponsored or based outside the U.S.</span>
-          <input type="text" id="ein" name="ein" value="{{ form_data.get('ein', '') }}">
-        </div>
-      </div>
-
-      <div class="field-row field-row--single">
-        <div class="field">
-          <label for="location">Where does your work take place?</label>
-          <input type="text" id="location" name="location" placeholder="City, state, or country" value="{{ form_data.get('location', '') }}">
-        </div>
-      </div>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend>Contact</legend>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="contact_name">Your name <span class="req">*</span></label>
-          <input type="text" id="contact_name" name="contact_name" required value="{{ form_data.get('contact_name', '') }}">
-        </div>
-        <div class="field">
-          <label for="contact_role">Your role</label>
-          <input type="text" id="contact_role" name="contact_role" value="{{ form_data.get('contact_role', '') }}">
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="email">Email <span class="req">*</span></label>
-          <input type="email" id="email" name="email" required value="{{ form_data.get('email', '') }}">
-        </div>
-        <div class="field">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" value="{{ form_data.get('phone', '') }}">
-        </div>
-      </div>
-    </fieldset>
-
-    <fieldset class="fieldset">
-      <legend>Request</legend>
-
-      <div class="field-row field-row--single">
-        <div class="field">
-          <label>Which focus areas does your work touch?</label>
-          <span class="hint">Select all that apply.</span>
-          <div class="checkgrid">
-            {% for choice in focus_choices %}
             <label>
-              <input type="checkbox" name="focus_areas" value="{{ choice }}">
-              <span>{{ choice }}</span>
+              <input type="radio" name="org_type" value="{{ t }}"
+                     {% if form_data.get('org_type') == t %}checked{% endif %}>
+              <span>{{ t }}</span>
             </label>
             {% endfor %}
           </div>
         </div>
       </div>
 
+      {{ area('mission_activities', 'Briefly describe your ministry mission and principal activities.', true) }}
+      {{ area('gospel_sharing', 'How does your ministry clearly share the Gospel of Jesus Christ?', true) }}
+
       <div class="field-row">
+        {{ line('amount_requested', 'Amount requested', true, '', 'text', '$') }}
+        {{ line('total_project_budget', 'Total project budget', false, '', 'text', '$') }}
+      </div>
+
+      <div class="field-row">
+        {{ line('start_date', 'Proposed start date', true, '', 'date') }}
+        {{ line('end_date', 'Proposed end date', true, '', 'date') }}
+      </div>
+
+      {{ area('project_summary', 'Provide a concise summary of the project or ministry request.', true) }}
+      {{ area('who_served', 'Who will be served, where, and what need will be addressed?', true) }}
+    </fieldset>
+
+    <!-- ============ 2. MISSION ALIGNMENT AND BIBLE DISTRIBUTION ============ -->
+    <fieldset class="fieldset">
+      <legend>2. Mission alignment and Bible distribution</legend>
+
+      <div class="field-row field-row--single">
         <div class="field">
-          <label for="funding_type">Type of funding</label>
-          <select id="funding_type" name="funding_type">
-            <option value="">Select one</option>
-            {% for t in funding_types %}
-            <option value="{{ t }}" {% if form_data.get('funding_type') == t %}selected{% endif %}>{{ t }}</option>
+          <label>Select all priorities that apply</label>
+          <div class="checkgrid">
+            {% for pr in priorities %}
+            <label>
+              <input type="checkbox" name="priorities" value="{{ pr }}">
+              <span>{{ pr }}</span>
+            </label>
             {% endfor %}
-          </select>
+          </div>
         </div>
+      </div>
+
+      {{ area('strongest_fit', 'Which priority is the strongest fit, and how will the grant advance it?', true) }}
+      {{ area('activities_timeline', 'List the main activities, timeline, and person responsible for the work.', true) }}
+      {{ area('funds_use', 'How will the requested funds be used?', true, 'Note any administrative or fundraising costs.') }}
+
+      <h3 class="subhead">Bible and Scripture distribution</h3>
+
+      <div class="field-row field-row--single">
         <div class="field">
-          <label for="amount">Amount requested</label>
-          <select id="amount" name="amount">
-            <option value="">Select one</option>
-            {% for a in amount_ranges %}
-            <option value="{{ a }}" {% if form_data.get('amount') == a %}selected{% endif %}>{{ a }}</option>
+          <label>Is your organization willing and able to distribute Bibles or Scripture as part of this work? <span class="req">*</span></label>
+          <div class="checkgrid checkgrid--3">
+            {% for opt in bible_willingness %}
+            <label>
+              <input type="radio" name="bible_willingness" value="{{ opt }}"
+                     {% if form_data.get('bible_willingness') == opt %}checked{% endif %}>
+              <span>{{ opt }}</span>
+            </label>
             {% endfor %}
-          </select>
+          </div>
         </div>
       </div>
 
-      <div class="field-row field-row--single">
-        <div class="field">
-          <label for="mission">Your mission <span class="req">*</span></label>
-          <span class="hint">In a few sentences, what does your organization exist to do?</span>
-          <textarea id="mission" name="mission" required>{{ form_data.get('mission', '') }}</textarea>
-        </div>
-      </div>
+      {{ area('bible_description', 'Describe the proposed audience, setting, language, and approximate number of Bibles or Scripture materials.', true) }}
+      {{ area('scripture_engagement', 'How will recipients be encouraged to engage with Scripture through discipleship, church connection, or follow-up?', true) }}
 
       <div class="field-row field-row--single">
         <div class="field">
-          <label for="use_of_funds">How would these funds be used? <span class="req">*</span></label>
-          <span class="hint">Be specific. A clear, well-defined use is one of the things we look for.</span>
-          <textarea id="use_of_funds" name="use_of_funds" required>{{ form_data.get('use_of_funds', '') }}</textarea>
-        </div>
-      </div>
-
-      <div class="field-row field-row--single">
-        <div class="field">
-          <label for="track_record">Your track record</label>
-          <span class="hint">How long have you been doing this work, and what has it produced?</span>
-          <textarea id="track_record" name="track_record">{{ form_data.get('track_record', '') }}</textarea>
-        </div>
-      </div>
-
-      <div class="field-row field-row--single">
-        <div class="field">
-          <label for="referral">How did you hear about us?</label>
-          <input type="text" id="referral" name="referral" value="{{ form_data.get('referral', '') }}">
+          <label>Assistance requested</label>
+          <div class="checkgrid checkgrid--3">
+            {% for a in assistance_types %}
+            <label>
+              <input type="checkbox" name="assistance" value="{{ a }}">
+              <span>{{ a }}</span>
+            </label>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </fieldset>
 
+    <!-- ============ 3. OUTCOMES, FINANCES, AND CERTIFICATION ============ -->
+    <fieldset class="fieldset">
+      <legend>3. Outcomes, finances, and certification</legend>
+
+      {{ area('expected_results', 'What specific results do you expect during the grant period, and how will you measure them?', true) }}
+      {{ area('sustainability', 'How will the ministry or project continue after this grant ends?', true) }}
+      {{ area('risks', 'Identify any significant risks, safeguarding concerns, debt, legal matters, or financial issues.') }}
+
+      <h3 class="subhead">Simple grant budget</h3>
+
+      <div class="budget">
+        <div class="budget__head">
+          <span>Expense category or description</span>
+          <span>Total cost</span>
+          <span>Amount requested</span>
+        </div>
+        {% for i in budget_rows %}
+        <div class="budget__row">
+          <input type="text" name="budget_desc_{{ i }}" aria-label="Budget line {{ loop.index }} description">
+          <input type="text" name="budget_total_{{ i }}" aria-label="Budget line {{ loop.index }} total cost" inputmode="decimal" placeholder="$">
+          <input type="text" name="budget_request_{{ i }}" class="js-budget-request" aria-label="Budget line {{ loop.index }} amount requested" inputmode="decimal" placeholder="$">
+        </div>
+        {% endfor %}
+        <div class="budget__foot">
+          <span>Total requested</span>
+          <span></span>
+          <strong id="budget-total">$0.00</strong>
+        </div>
+      </div>
+      <input type="hidden" name="budget_grand_total" id="budget-total-value" value="">
+
+      <h3 class="subhead">Required attachments</h3>
+      <p class="fieldset__note">Confirm which documents you have ready. We will request them by email once your application is under review. Please do not send financial documents through this form.</p>
+
+      <div class="field-row field-row--single">
+        <div class="field">
+          <div class="checkgrid">
+            {% for a in attachments %}
+            <label>
+              <input type="checkbox" name="attachments" value="{{ a }}">
+              <span>{{ a }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subhead">Certification</h3>
+
+      <label class="certify">
+        <input type="checkbox" name="certify" value="yes" {% if form_data.get('certify') %}checked{% endif %}>
+        <span>{{ certification_text }} <span class="req">*</span></span>
+      </label>
+
+      <div class="field-row">
+        {{ line('authorized_rep', 'Authorized representative', true) }}
+        {{ line('rep_title', 'Title', true) }}
+      </div>
+
+      <div class="field-row field-row--single">
+        {{ line('signature', 'Signature', true, 'Type your full legal name. This serves as your electronic signature. The date is recorded automatically on submission.') }}
+      </div>
+    </fieldset>
+
     <div class="form-foot">
-      <p>Given the volume of applications we receive, we cannot respond individually to every submission.</p>
+      <p>Questions may be directed to Pray and Obey Ministries at 910-799-7548. Given the volume of applications we receive, we cannot respond individually to every submission.</p>
       <button type="submit" class="btn btn--primary btn--lg">Submit application</button>
     </div>
   </form>

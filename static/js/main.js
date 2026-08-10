@@ -42,6 +42,32 @@
     });
   }
 
+  /* Grant budget: live total of the "amount requested" column */
+  var budgetInputs = document.querySelectorAll(".js-budget-request");
+  var budgetTotal = document.getElementById("budget-total");
+  var budgetValue = document.getElementById("budget-total-value");
+
+  if (budgetInputs.length && budgetTotal) {
+    var recalc = function () {
+      var sum = 0;
+      budgetInputs.forEach(function (input) {
+        var n = parseFloat(String(input.value).replace(/[^0-9.\-]/g, ""));
+        if (!isNaN(n)) { sum += n; }
+      });
+      var formatted = sum.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD"
+      });
+      budgetTotal.textContent = formatted;
+      if (budgetValue) { budgetValue.value = formatted; }
+    };
+    budgetInputs.forEach(function (input) {
+      input.addEventListener("input", recalc);
+      input.addEventListener("blur", recalc);
+    });
+    recalc();
+  }
+
   /* Scroll reveal, disabled when the visitor prefers reduced motion */
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var items = document.querySelectorAll(".reveal");

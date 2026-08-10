@@ -75,7 +75,14 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `FAQS` | Accordion questions and answers |
 | `CLOSING_CTA` | Bottom call to action |
 | `FOOTER` | Footer link columns |
-| `ORG_TYPES`, `FUNDING_TYPES`, `AMOUNT_RANGES` | Application form dropdowns |
+| `ORG_TYPES` | Organization type options on the application |
+| `PRIORITIES` | Priority checkboxes in section 2 of the application |
+| `BIBLE_WILLINGNESS` | Bible distribution options |
+| `ASSISTANCE_TYPES` | Assistance requested checkboxes |
+| `ATTACHMENTS` | Required attachments checklist |
+| `BUDGET_ROWS` | Number of blank budget lines (default 5) |
+| `CERTIFICATION_TEXT` | Legal certification wording |
+| `REQUIRED_FIELDS` | Which fields block submission when empty |
 
 Adding a focus area automatically adds it to the application form checkboxes. The grid handles the orphan card in the last row on its own.
 
@@ -114,6 +121,28 @@ Defined in `static/css/styles.css` under `:root`.
 Section backgrounds are white or navy only. `--tint` provides separation between adjacent light sections without introducing a third color family. Card surfaces invert automatically: white cards on tinted sections, tinted cards on white sections.
 
 Gold measures 2.13:1 against cream, which fails WCAG for text. It is used structurally on light backgrounds and as text only on navy, where it measures 5.71:1.
+
+---
+
+## The grant application
+
+`/apply` mirrors the Simplified Grant Application PDF in three sections:
+
+1. **Organization and request.** Legal name, EIN, contact, mailing address, organization type, mission, Gospel activity, amount requested, project dates, summary, who is served.
+2. **Mission alignment and Bible distribution.** Priority checkboxes, strongest fit, activities and timeline, use of funds, Bible distribution willingness and plan, Scripture engagement, assistance requested.
+3. **Outcomes, finances, and certification.** Expected results, sustainability, risks, a five-line grant budget with a live total, attachments checklist, certification checkbox, authorized representative, title, and typed signature.
+
+Twenty-six fields are required. Submission is blocked with a single message listing every missing field by name.
+
+### Attachments
+
+The form does not accept file uploads. There is no object storage attached to this deployment, and routing financial documents through email attachments creates a retention problem. Applicants confirm which documents they have ready; the fund requests them by email once an application is under review.
+
+To change this, you would need S3 or Render disk storage plus a virus-scanning step. Not recommended before there is volume that justifies it.
+
+### Electronic signature
+
+The signature field captures a typed full legal name alongside the certification checkbox, and the submission timestamp is recorded automatically. This is a standard electronic signature pattern and is generally enforceable under E-SIGN and UETA. It is not a substitute for legal review if the fund wants a stronger evidentiary record.
 
 ---
 
