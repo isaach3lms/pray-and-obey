@@ -68,7 +68,6 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `SITE` | Name, tagline, meta description, email, social links |
 | `NAV` | Header navigation items |
 | `HERO` | Headline, body, buttons, floating cards |
-| `AT_A_GLANCE` | The four-fact strip under the hero |
 | `MISSION` | Mission section copy, badge, two pillars |
 | `FOCUS` | The seven funding focus areas |
 | `PROCESS` | The four application steps |
@@ -84,15 +83,18 @@ Adding a focus area automatically adds it to the application form checkboxes. Th
 
 ## Photography
 
-Three photo slots render a branded navy panel with the flame mark until real images are supplied. Drop files at these exact paths and they appear automatically. No code change required.
+Two photo slots are filled. Both images are cropped to a 4:4.2 portrait ratio to match the source files.
 
-| Path | Slot | Recommended |
+| Path | Slot | Current image |
 |---|---|---|
-| `static/img/hero.jpg` | Hero image card | 1200 x 1020, landscape-ish |
-| `static/img/mission.jpg` | Mission section | 1000 x 1050, portrait |
-| `static/img/criteria.jpg` | Criteria section | 1000 x 1050, portrait |
+| `static/img/hero.jpg` | Hero image card | Ministry team praying over a young girl |
+| `static/img/mission.jpg` | Mission section | Group standing arm in arm in prayer |
 
-Use real ministry photography. Stock imagery of unrelated people undercuts a fund whose posture is quiet and credible.
+To swap either image, drop a replacement at the same path and push. Crop to roughly 4:4.2 portrait (for example 1200 x 1260) before saving, or the CSS will center-crop it for you.
+
+The Criteria section no longer uses a photo. It renders as a two-column text layout.
+
+**Source resolution note.** Both supplied files are 800 x 1200. That renders acceptably at 1x but is soft on retina displays. Higher-resolution originals (1600px wide or more) would sharpen the hero noticeably. Drop them at the same paths when available.
 
 ---
 
@@ -156,7 +158,8 @@ Resend also requires DKIM and SPF records on the sending domain. Add those from 
 
 ## Pre-launch checklist
 
-- [ ] Real photography dropped into the three slots
+- [ ] Higher-resolution originals swapped in for hero and mission
+- [ ] Written photo release or license confirmed for both images
 - [ ] `SECRET_KEY` set to a long random value in Render
 - [ ] `RESEND_API_KEY` created as a sending-only key
 - [ ] Sending domain verified in Resend, DKIM and SPF added

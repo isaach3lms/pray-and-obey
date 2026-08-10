@@ -69,7 +69,6 @@ NAV = [
 ]
 
 HERO = {
-    "eyebrow": "A private grantmaking fund",
     "headline_lead": "We support those who",
     "headline_accent": "serve the vulnerable.",
     "body": (
@@ -80,19 +79,10 @@ HERO = {
     "primary_cta": {"label": "Apply for funding", "href": "/apply"},
     "secondary_cta": {"label": "See what we fund", "href": "/#what-we-fund"},
     "image": "img/hero.jpg",
-    "image_alt": "Volunteers serving in a local community",
+    "image_alt": "A ministry team praying over a young girl",
     "float_card_top": {"label": "Funding type", "value": "Grants, not loans"},
     "float_card_bottom": {"label": "Where we give", "value": "U.S. and international"},
 }
-
-# Honest, verifiable facts. Replace with real figures only when the fund is
-# ready to publish them. Do not invent impact numbers.
-AT_A_GLANCE = [
-    {"value": "Grants", "label": "No repayment expected"},
-    {"value": "U.S. and global", "label": "Work at home and abroad"},
-    {"value": "Projects and operations", "label": "One-time or ongoing needs"},
-    {"value": "15 to 20 min", "label": "Typical application time"},
-]
 
 MISSION = {
     "eyebrow": "Our mission",
@@ -104,7 +94,7 @@ MISSION = {
         "dignity, and practical care to those in need."
     ),
     "image": "img/mission.jpg",
-    "image_alt": "A ministry team praying together before serving",
+    "image_alt": "A group standing arm in arm in prayer",
     "badge_value": "Prayer first",
     "badge_label": "Every grant begins there",
     "pillars": [
@@ -201,8 +191,10 @@ PROCESS = {
 CRITERIA = {
     "eyebrow": "Criteria",
     "headline": "What we look for.",
-    "image": "img/criteria.jpg",
-    "image_alt": "Community members receiving practical help",
+    "intro": (
+        "We are a small fund reviewing more requests than we can support. Clarity helps us both. "
+        "Here is what moves an application forward."
+    ),
     "looking_for": [
         "A clear, biblically grounded, Christ-centered mission",
         "Alignment with one or more of our focus areas",
@@ -411,7 +403,6 @@ def index():
     return render_template(
         "index.html",
         hero=HERO,
-        glance=AT_A_GLANCE,
         mission=MISSION,
         focus=FOCUS,
         process=PROCESS,

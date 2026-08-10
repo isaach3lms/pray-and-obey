@@ -10,11 +10,6 @@
   <div class="wrap">
     <div class="hero__grid">
       <div class="hero__copy">
-        <span class="hero__pill">
-          <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
-          {{ hero.eyebrow }}
-        </span>
-
         <h1>{{ hero.headline_lead }}<br><span class="accent">{{ hero.headline_accent }}</span></h1>
 
         <p class="hero__body">{{ hero.body }}</p>
@@ -52,22 +47,8 @@
   </div>
 </section>
 
-<!-- ================= AT A GLANCE ================= -->
-<section class="section section--tight section--white">
-  <div class="wrap">
-    <div class="glance reveal">
-      {% for item in glance %}
-      <div class="glance__item">
-        <strong>{{ item.value }}</strong>
-        <span>{{ item.label }}</span>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
 <!-- ================= MISSION ================= -->
-<section class="section section--cream" id="mission">
+<section class="section section--white" id="mission">
   <div class="wrap">
     <div class="split reveal">
       <div class="split__media">
@@ -107,7 +88,7 @@
 </section>
 
 <!-- ================= WHAT WE FUND ================= -->
-<section class="section section--white" id="what-we-fund">
+<section class="section section--cream" id="what-we-fund">
   <div class="wrap">
     <div class="focus__intro reveal">
       <div>
@@ -157,46 +138,35 @@
 </section>
 
 <!-- ================= CRITERIA ================= -->
-<section class="section section--cream" id="criteria">
+<section class="section section--white" id="criteria">
   <div class="wrap">
-    <div class="split split--reverse reveal">
-      <div class="split__media">
-        <div class="frame">
-          {% if has_image(criteria.image) %}
-            <img src="{{ url_for('static', filename=criteria.image) }}" alt="{{ criteria.image_alt }}">
-          {% else %}
-            <div class="photo-fallback">
-              <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
-            </div>
-          {% endif %}
-        </div>
-      </div>
+    <div class="section__head reveal">
+      <span class="eyebrow eyebrow--start">{{ criteria.eyebrow }}</span>
+      <h2>{{ criteria.headline }}</h2>
+      <p>{{ criteria.intro }}</p>
+    </div>
 
-      <div class="split__copy">
-        <span class="eyebrow eyebrow--start">{{ criteria.eyebrow }}</span>
-        <h2>{{ criteria.headline }}</h2>
+    <div class="criteria-grid reveal">
+      <ul class="checklist">
+        {% for item in criteria.looking_for %}
+        <li>{{ icon('check') }}<span>{{ item }}</span></li>
+        {% endfor %}
+      </ul>
 
+      <div class="note-box">
+        <h3>{{ criteria.good_to_know_title }}</h3>
         <ul class="checklist">
-          {% for item in criteria.looking_for %}
-          <li>{{ icon('check') }}<span>{{ item }}</span></li>
+          {% for item in criteria.good_to_know %}
+          <li>{{ icon('dot') }}<span>{{ item }}</span></li>
           {% endfor %}
         </ul>
-
-        <div class="note-box">
-          <h3>{{ criteria.good_to_know_title }}</h3>
-          <ul class="checklist">
-            {% for item in criteria.good_to_know %}
-            <li>{{ icon('dot') }}<span>{{ item }}</span></li>
-            {% endfor %}
-          </ul>
-        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ================= FAQ ================= -->
-<section class="section section--white" id="faq">
+<section class="section section--cream" id="faq">
   <div class="wrap">
     <div class="section__head section__head--center reveal">
       <span class="eyebrow">FAQ</span>
@@ -218,7 +188,7 @@
 </section>
 
 <!-- ================= CLOSING CTA ================= -->
-<section class="section section--cream">
+<section class="section section--white">
   <div class="wrap">
     <div class="cta-band reveal">
       <div>

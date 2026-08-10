@@ -315,7 +315,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .hero {
   position: relative;
-  padding: clamp(48px, 6vw, 84px) 0 clamp(56px, 6vw, 92px);
+  padding: clamp(56px, 7vw, 104px) 0 clamp(64px, 7vw, 104px);
   overflow: hidden;
 }
 
@@ -338,24 +338,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   position: relative;
   z-index: 1;
 }
-
-.hero__pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-pill);
-  padding: 7px 16px 7px 8px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--navy);
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-sm);
-}
-.hero__pill img { width: 26px; height: 26px; object-fit: contain; }
 
 .hero h1 { margin-bottom: 22px; }
 
@@ -386,7 +368,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
-  aspect-ratio: 4 / 3.4;
+  aspect-ratio: 4 / 4.2;
   background:
     linear-gradient(150deg, rgba(13,45,92,.92), rgba(13,45,92,.62)),
     var(--cream-200);
@@ -431,43 +413,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .float-card--top { top: 26px; left: -26px; }
 .float-card--bottom { bottom: 30px; right: -22px; border-left: 4px solid var(--flame); }
-
-/* --------------------------------------------------------------------------
-   At a glance strip
-   -------------------------------------------------------------------------- */
-
-.glance {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-
-.glance__item {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 26px 22px;
-  box-shadow: var(--shadow-sm);
-  position: relative;
-}
-.glance__item::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 22px;
-  width: 34px; height: 4px;
-  background: var(--gold);
-  border-radius: 0 0 4px 4px;
-}
-.glance__item strong {
-  display: block;
-  font-size: 1.32rem;
-  font-weight: 800;
-  color: var(--navy);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  margin-bottom: 6px;
-}
-.glance__item span { font-size: var(--fs-small); color: var(--ink-soft); }
 
 /* --------------------------------------------------------------------------
    Mission (image left, copy right)
@@ -654,6 +599,16 @@ ul { margin: 0; padding: 0; list-style: none; }
   fill: none;
   stroke-width: 2.2;
 }
+
+.criteria-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.criteria-grid .note-box { margin-top: 0; }
+.criteria-grid > .checklist { gap: 18px; padding-top: 4px; }
+.criteria-grid > .checklist li { font-size: 1rem; }
 
 .note-box {
   background: var(--navy);
@@ -967,7 +922,6 @@ ul { margin: 0; padding: 0; list-style: none; }
    -------------------------------------------------------------------------- */
 
 @media (max-width: 1024px) {
-  .glance { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); row-gap: 34px; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .card--wide { grid-column: span 2; }
@@ -986,6 +940,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   .float-card--bottom { right: 8px; bottom: 16px; }
 
   .split { grid-template-columns: 1fr; }
+  .criteria-grid { grid-template-columns: 1fr; }
   .split--reverse .split__media { order: 0; }
   .focus__intro { grid-template-columns: 1fr; align-items: start; }
   .cta-band { grid-template-columns: 1fr; }
@@ -993,7 +948,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 @media (max-width: 640px) {
   :root { --gutter: 18px; }
-  .glance { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .cards { grid-template-columns: 1fr; }
   .card--wide { grid-column: span 1; }
@@ -1002,5 +956,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   .checkgrid { grid-template-columns: 1fr; }
   .footer__inner { grid-template-columns: 1fr; }
   .hero__ctas .btn { width: 100%; }
-  .frame { aspect-ratio: 4 / 3.4; }
+  .frame,
+  .hero__photo { aspect-ratio: 4 / 4; }
 }
