@@ -318,7 +318,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   background: rgba(255, 255, 255, 0.06);
   border-color: var(--line-dark);
 }
-.section--navy .pillar p { color: rgba(255, 255, 255, 0.76); }
+.section--navy .pillar p { color: var(--gold-soft); }
 
 .section--navy .faq__item[open] {
   background: rgba(255, 255, 255, 0.09);
