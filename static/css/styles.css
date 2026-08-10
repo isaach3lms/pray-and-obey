@@ -569,14 +569,11 @@ ul { margin: 0; padding: 0; list-style: none; }
   grid-template-columns: auto 1fr auto;
   gap: 24px;
   align-items: center;
-  background: var(--navy);
-  border-color: var(--navy);
 }
-.card--wide:hover { border-color: var(--gold); }
-.card--wide .card__icon { margin-bottom: 0; background: rgba(255,255,255,.10); }
-.card--wide h3 { color: var(--white); margin-bottom: 4px; }
-.card--wide p { color: rgba(255,255,255,.76); }
-.card--wide .textlink { color: var(--gold-soft); white-space: nowrap; }
+.card--wide .card__icon { margin-bottom: 0; }
+.card--wide h3 { margin-bottom: 4px; }
+.card--wide .textlink { color: var(--navy); white-space: nowrap; }
+.card--wide .textlink:hover { color: var(--flame); }
 
 /* --------------------------------------------------------------------------
    Process (navy band)
