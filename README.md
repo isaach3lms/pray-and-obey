@@ -105,6 +105,19 @@ The Criteria section no longer uses a photo. It renders as a two-column text lay
 
 ---
 
+## Logo assets
+
+| File | Where it is used | Notes |
+|---|---|---|
+| `logo-nav.png` | Header, on white | Navy wordmark version |
+| `logo-light.png` | Footer, on navy | White wordmark version, background knocked out with feathered alpha edges. Exported at 640px for retina, displayed at 218px. |
+| `logo-mark.png` | Favicon, centered pages | Flame and book mark only |
+| `logo-full.png` | Open Graph share image | Full lockup |
+
+The footer asset comes from the supplied dark-background logo. Its flat navy background was removed using distance-based alpha so the anti-aliased edges feather rather than stair-step, which is what lets it sit cleanly on the deep navy footer.
+
+---
+
 ## Brand tokens
 
 Defined in `static/css/styles.css` under `:root`.

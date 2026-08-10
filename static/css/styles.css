@@ -993,7 +993,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   gap: clamp(28px, 6vw, 80px);
 }
 
-.footer__logo { width: 200px; height: auto; margin-bottom: 16px; }
+.footer__logo { width: 218px; height: auto; margin-bottom: 18px; }
 .footer__tagline { font-size: var(--fs-small); max-width: 34ch; color: rgba(255,255,255,.62); }
 
 .footer__col h3 {
