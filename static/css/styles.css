@@ -782,6 +782,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   margin-bottom: 18px;
+  align-items: end;
 }
 .field-row--single { grid-template-columns: 1fr; }
 
