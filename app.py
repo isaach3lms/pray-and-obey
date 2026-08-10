@@ -54,6 +54,8 @@ SITE = {
     ),
     "domain": "https://prayandobey.org",
     "email": "info@prayandobey.org",
+    # Not currently rendered. The footer Connect column was removed.
+    # Re-adding the column in base.html will pick these up again.
     "socials": [
         {"label": "Facebook", "handle": "prayandobeyministries", "url": "https://facebook.com/prayandobeyministries"},
         {"label": "Instagram", "handle": "prayandobeyministries", "url": "https://instagram.com/prayandobeyministries"},

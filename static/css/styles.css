@@ -903,8 +903,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   margin: 0 auto;
   padding: 58px var(--gutter) 40px;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
-  gap: 34px;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: clamp(28px, 6vw, 80px);
 }
 
 .footer__logo { width: 200px; height: auto; margin-bottom: 16px; }
@@ -927,7 +927,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   max-width: var(--wrap);
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   gap: 14px;
   flex-wrap: wrap;
 }
