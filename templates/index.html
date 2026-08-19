@@ -4,11 +4,12 @@
 {% block title %}{{ site.name }} | {{ site.tagline }}{% endblock %}
 
 {% macro verse(v) %}
-{% if v and v.text %}
-<figure class="verse">
-  <blockquote>{{ v.text }}</blockquote>
-  <figcaption>{{ v.reference }} <span>{{ v.translation }}</span></figcaption>
-</figure>
+{% if v %}
+<p class="verse-ref">
+  <span class="verse-ref__mark" aria-hidden="true"></span>
+  <span class="verse-ref__cite">{{ v.reference }}</span>
+  <span class="verse-ref__ver">{{ v.translation }}</span>
+</p>
 {% endif %}
 {% endmacro %}
 

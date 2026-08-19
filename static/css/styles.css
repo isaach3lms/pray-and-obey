@@ -610,6 +610,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .criteria-grid .note-box { margin-top: 0; }
 .criteria-grid > .checklist { gap: 18px; padding-top: 4px; }
+#criteria .verse-ref { margin-bottom: 18px; }
+#what-we-fund .verse-ref { margin-bottom: 22px; }
 .criteria-grid > .checklist li { font-size: 1rem; }
 
 .note-box {
@@ -1331,58 +1333,38 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 
 /* ==========================================================================
-   Scripture pull-quote
+   Scripture reference
    ========================================================================== */
 
-.verse {
-  margin: 26px 0 30px;
-  padding: 0 0 0 22px;
-  border-left: 3px solid var(--gold);
-  max-width: 62ch;
-}
-.verse blockquote {
-  margin: 0 0 9px;
-  font-size: 1.04rem;
-  line-height: 1.62;
-  font-style: italic;
-  color: var(--ink);
-}
-.verse figcaption {
-  font-size: 0.72rem;
+.verse-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 4px;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--flame);
-}
-.verse figcaption span {
-  color: var(--ink-soft);
-  font-weight: 600;
-  letter-spacing: .08em;
+  white-space: nowrap;
 }
 
-/* On navy sections the gold rule and light text carry it. */
-.section--navy .verse blockquote { color: var(--white); }
-.section--navy .verse figcaption { color: var(--gold-soft); }
-.section--navy .verse figcaption span { color: rgba(255,255,255,.62); }
-
-/* Centered section heads get a centered verse. */
-.section__head--center + .verse {
-  margin-left: auto;
-  margin-right: auto;
-  border-left: 0;
-  border-top: 3px solid var(--gold);
-  padding: 20px 0 0;
-  text-align: center;
+/* Small gold rule, the same device used on section eyebrows. */
+.verse-ref__mark {
+  width: 22px;
+  height: 5px;
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  flex: 0 0 auto;
 }
 
-.footer__scripture {
-  font-size: 0.7rem !important;
-  color: rgba(255,255,255,.38) !important;
-  max-width: 70ch;
-  line-height: 1.5;
-}
+.verse-ref__cite { color: var(--navy); }
+.verse-ref__ver { color: var(--ink-soft); font-weight: 600; letter-spacing: .08em; }
+
+.section--navy .verse-ref__cite { color: var(--white); }
+.section--navy .verse-ref__ver { color: rgba(255, 255, 255, .58); }
+
+.section__head--center + .verse-ref { display: flex; justify-content: center; }
 
 @media (max-width: 640px) {
-  .verse { padding-left: 16px; margin: 22px 0 26px; }
-  .verse blockquote { font-size: 0.98rem; }
+  .verse-ref { font-size: 0.72rem; gap: 8px; }
 }

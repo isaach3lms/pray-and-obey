@@ -205,44 +205,17 @@ FOCUS = {
 }
 
 # ---------------------------------------------------------------------------
-# Scripture
+# Scripture references
 # ---------------------------------------------------------------------------
 #
-# PASTE THE ESV TEXT INTO THE EMPTY "text" FIELDS BELOW.
-#
-# Crossway permits up to 500 verses without a formal license, so three verses
-# is well inside their Standard Use Guidelines. The required attribution is
-# already rendered in the footer, see SCRIPTURE_NOTICE.
-#
-# A verse with an empty "text" value does not render at all, so the site is
-# safe to deploy before the text is filled in.
-#
-# Copy the text from https://www.esv.org exactly as published.
+# References only. No verse text is displayed, so no ESV license notice or
+# attribution is required. Changing a reference here changes it on the page.
 
 VERSES = {
-    "mission": {
-        "reference": "Matthew 22:37-40",
-        "translation": "ESV",
-        "text": "",
-    },
-    "focus": {
-        "reference": "Micah 6:8",
-        "translation": "ESV",
-        "text": "",
-    },
-    "criteria": {
-        "reference": "Matthew 6:33",
-        "translation": "ESV",
-        "text": "",
-    },
+    "mission": {"reference": "Matthew 22:37-40", "translation": "ESV"},
+    "focus": {"reference": "Micah 6:8", "translation": "ESV"},
+    "criteria": {"reference": "Matthew 6:33", "translation": "ESV"},
 }
-
-# Crossway requires this notice wherever the ESV is quoted.
-SCRIPTURE_NOTICE = (
-    "Scripture quotations are from the ESV Bible (The Holy Bible, English Standard "
-    "Version), copyright 2001 by Crossway, a publishing ministry of Good News "
-    "Publishers. Used by permission. All rights reserved."
-)
 
 
 PROCESS = {
@@ -539,8 +512,6 @@ def inject_globals():
         "footer": FOOTER,
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
-        "scripture_notice": SCRIPTURE_NOTICE,
-        "any_scripture": any(v["text"] for v in VERSES.values()),
     }
 
 
