@@ -98,6 +98,7 @@ SITE = {
 }
 
 NAV = [
+    {"label": "About", "href": "/#about"},
     {"label": "Mission", "href": "/#mission"},
     {"label": "What We Fund", "href": "/#what-we-fund"},
     {"label": "How It Works", "href": "/#how-it-works"},
@@ -105,8 +106,9 @@ NAV = [
 ]
 
 HERO = {
-    "headline_lead": "Faith that moves us",
-    "headline_accent": "to give.",
+    "eyebrow": "About",
+    "headline_lead": "Faith that moves",
+    "headline_accent": "us to give.",
     # Split into paragraphs so the hero reads as a story rather than one block.
     "body": [
         (

@@ -6,10 +6,12 @@
 {% block content %}
 
 <!-- ================= HERO ================= -->
-<section class="hero">
+<section class="hero" id="about">
   <div class="wrap">
     <div class="hero__grid">
       <div class="hero__copy">
+        <span class="eyebrow eyebrow--start">{{ hero.eyebrow }}</span>
+
         <h1>{{ hero.headline_lead }}<br><span class="accent">{{ hero.headline_accent }}</span></h1>
 
         <div class="hero__body">

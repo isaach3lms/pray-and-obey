@@ -349,7 +349,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .hero {
   position: relative;
-  padding: clamp(56px, 7vw, 104px) 0 clamp(64px, 7vw, 104px);
+  padding: clamp(46px, 5.5vw, 84px) 0 clamp(64px, 7vw, 104px);
   overflow: hidden;
 }
 
