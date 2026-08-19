@@ -273,13 +273,6 @@ CRITERIA = {
 
 FAQS = [
     {
-        "q": "Do you fund internationally, or only in the U.S.?",
-        "a": (
-            "Both. Our compassion-focused giving supports work happening in local communities and "
-            "around the world."
-        ),
-    },
-    {
         "q": "Do we need to be a registered nonprofit to apply?",
         "a": (
             "Most of our partners are 501(c)(3) organizations, churches, or projects with a fiscal "
