@@ -105,13 +105,25 @@ NAV = [
 ]
 
 HERO = {
-    "headline_lead": "We support those who",
-    "headline_accent": "serve the vulnerable.",
-    "body": (
-        "Pray and Obey Ministries provides grants to organizations committed to compassionate "
-        "action for vulnerable individuals and communities. Together, we support the work that "
-        "brings hope, dignity, and practical help to those who need it most."
-    ),
+    "headline_lead": "Faith that moves us",
+    "headline_accent": "to give.",
+    # Split into paragraphs so the hero reads as a story rather than one block.
+    "body": [
+        (
+            "Pray and Obey Ministries is a Christian charitable fund conceived by a Christian "
+            "family in Wilmington, North Carolina, with a desire to make a lasting Kingdom "
+            "impact in their community and around the world."
+        ),
+        (
+            "Guided by prayer, obedience to God's Word, and faithful stewardship, the ministry "
+            "supports organizations and individuals who share the Gospel, serve those in need, "
+            "strengthen communities, and advance Christ-centered work."
+        ),
+        (
+            "Its mission is not only to make an impact today, but to establish a legacy of "
+            "faith and generosity that will continue for generations to come."
+        ),
+    ],
     "primary_cta": {"label": "Apply for funding", "href": "/apply"},
     "secondary_cta": {"label": "See what we fund", "href": "/#what-we-fund"},
     "image": "img/hero.jpg",

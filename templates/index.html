@@ -12,7 +12,11 @@
       <div class="hero__copy">
         <h1>{{ hero.headline_lead }}<br><span class="accent">{{ hero.headline_accent }}</span></h1>
 
-        <p class="hero__body">{{ hero.body }}</p>
+        <div class="hero__body">
+          {% for para in hero.body %}
+          <p{% if loop.first %} class="hero__lead"{% endif %}>{{ para }}</p>
+          {% endfor %}
+        </div>
 
         <div class="hero__ctas">
           <a class="btn btn--primary btn--lg" href="{{ hero.primary_cta.href }}">{{ hero.primary_cta.label }}</a>
