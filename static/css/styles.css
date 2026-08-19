@@ -235,7 +235,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .nav__brand { flex: 0 0 auto; }
-.nav__brand img { width: 176px; height: auto; }
+.nav__brand img { width: 192px; height: auto; }
 
 .nav__links {
   display: flex;
@@ -926,7 +926,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   padding: var(--section-y) var(--gutter);
 }
 .centered__inner { max-width: 560px; }
-.centered__mark { width: 82px; margin: 0 auto 26px; }
+.centered__mark { width: auto; height: 82px; margin: 0 auto 26px; }
 .centered .btn { margin-top: 12px; }
 
 /* --------------------------------------------------------------------------
@@ -945,7 +945,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   gap: clamp(28px, 6vw, 80px);
 }
 
-.footer__logo { width: 218px; height: auto; margin-bottom: 18px; }
+.footer__logo { width: 232px; height: auto; margin-bottom: 18px; }
 .footer__tagline { font-size: var(--fs-small); max-width: 34ch; color: rgba(255,255,255,.62); }
 
 .footer__col h3 {
@@ -1286,7 +1286,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   padding: clamp(28px, 4vw, 44px);
   text-align: center;
 }
-.auth__mark { width: 66px; margin: 0 auto 20px; }
+.auth__mark { width: auto; height: 70px; margin: 0 auto 20px; }
 .auth__card h1 { font-size: 1.9rem; margin-bottom: 10px; }
 .auth__intro { font-size: var(--fs-small); color: var(--ink-muted); margin-bottom: 26px; }
 .auth__form { display: grid; gap: 16px; text-align: left; margin-bottom: 18px; }
