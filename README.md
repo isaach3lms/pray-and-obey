@@ -77,6 +77,7 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `PROCESS` | The four application steps |
 | `CRITERIA` | What we look for, good to know before applying |
 | `FAQS` | Accordion questions and answers |
+| `VERSES` | The three Scripture pull-quotes. See below. |
 | `CLOSING_CTA` | Bottom call to action |
 | `FOOTER` | Footer link columns |
 | `ORG_TYPES` | Organization type options on the application |
@@ -162,6 +163,32 @@ To change this, you would need S3 or Render disk storage plus a virus-scanning s
 ### Electronic signature
 
 The signature field captures a typed full legal name alongside the certification checkbox, and the submission timestamp is recorded automatically. This is a standard electronic signature pattern and is generally enforceable under E-SIGN and UETA. It is not a substitute for legal review if the fund wants a stronger evidentiary record.
+
+---
+
+## Scripture
+
+Three verses are placed as pull-quotes, one per section:
+
+| Section | Reference |
+|---|---|
+| Mission | Matthew 22:37-40 |
+| What We Fund | Micah 6:8 |
+| Criteria | Matthew 6:33 |
+
+### Adding the text
+
+The `text` fields in `VERSES` are intentionally empty. A verse with empty text does not render, and the ESV attribution notice in the footer only appears once at least one verse has text. The site is safe to deploy in either state.
+
+To add them, open `app.py`, find `VERSES`, and paste each verse from esv.org into its `text` field. Nothing else needs to change. The reference, translation label, styling, and footer attribution are already wired.
+
+### Licensing
+
+Crossway's Standard Use Guidelines permit quoting the ESV in digital formats up to 500 verses without a formal license, provided the quotations do not exceed half of any one book or 25 percent of the work they appear in, and are not used in a commentary or biblical reference work. Three verses is well inside that.
+
+The required attribution renders automatically in the footer via `SCRIPTURE_NOTICE`. Do not remove it while any verse text is present.
+
+If more verses are added later, or if the site ever quotes Scripture at length, re-check the guidelines at https://www.crossway.org/permissions/.
 
 ---
 

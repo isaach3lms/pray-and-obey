@@ -3,6 +3,15 @@
 
 {% block title %}{{ site.name }} | {{ site.tagline }}{% endblock %}
 
+{% macro verse(v) %}
+{% if v and v.text %}
+<figure class="verse">
+  <blockquote>{{ v.text }}</blockquote>
+  <figcaption>{{ v.reference }} <span>{{ v.translation }}</span></figcaption>
+</figure>
+{% endif %}
+{% endmacro %}
+
 {% block content %}
 
 <!-- ================= HERO ================= -->
@@ -21,8 +30,9 @@
         </div>
 
         <div class="hero__ctas">
-          <a class="btn btn--primary btn--lg" href="{{ hero.primary_cta.href }}">{{ hero.primary_cta.label }}</a>
-          <a class="btn btn--ghost btn--lg" href="{{ hero.secondary_cta.href }}">{{ hero.secondary_cta.label }}</a>
+          <a class="btn btn--primary" href="{{ hero.primary_cta.href }}">{{ hero.primary_cta.label }}</a>
+          <a class="btn btn--ghost" href="{{ hero.secondary_cta.href }}">{{ hero.secondary_cta.label }}</a>
+          <a class="btn btn--ghost" href="{{ hero.tertiary_cta.href }}">{{ hero.tertiary_cta.label }}</a>
         </div>
 
         <p class="hero__note">All funding is given as a grant. There is no repayment expected.</p>
@@ -64,6 +74,8 @@
         <h2>{{ mission.headline }}</h2>
         <p>{{ mission.body }}</p>
 
+        {{ verse(verses.mission) }}
+
         <div class="pillars">
           {% for p in mission.pillars %}
           <div class="pillar">
@@ -89,6 +101,8 @@
       </div>
       <p>{{ focus.intro }}</p>
     </div>
+
+    {{ verse(verses.focus) }}
 
     <div class="cards reveal">
       {% for area in focus.areas %}
@@ -137,6 +151,8 @@
       <h2>{{ criteria.headline }}</h2>
       <p>{{ criteria.intro }}</p>
     </div>
+
+    {{ verse(verses.criteria) }}
 
     <div class="criteria-grid reveal">
       <ul class="checklist">

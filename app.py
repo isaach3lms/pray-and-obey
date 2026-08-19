@@ -127,7 +127,8 @@ HERO = {
         ),
     ],
     "primary_cta": {"label": "Apply for funding", "href": "/apply"},
-    "secondary_cta": {"label": "See what we fund", "href": "/#what-we-fund"},
+    "secondary_cta": {"label": "What we fund", "href": "/#what-we-fund"},
+    "tertiary_cta": {"label": "Our mission", "href": "/#mission"},
     "image": "img/hero.jpg",
     "image_alt": "A ministry team praying over a young girl",
 }
@@ -202,6 +203,47 @@ FOCUS = {
         },
     ],
 }
+
+# ---------------------------------------------------------------------------
+# Scripture
+# ---------------------------------------------------------------------------
+#
+# PASTE THE ESV TEXT INTO THE EMPTY "text" FIELDS BELOW.
+#
+# Crossway permits up to 500 verses without a formal license, so three verses
+# is well inside their Standard Use Guidelines. The required attribution is
+# already rendered in the footer, see SCRIPTURE_NOTICE.
+#
+# A verse with an empty "text" value does not render at all, so the site is
+# safe to deploy before the text is filled in.
+#
+# Copy the text from https://www.esv.org exactly as published.
+
+VERSES = {
+    "mission": {
+        "reference": "Matthew 22:37-40",
+        "translation": "ESV",
+        "text": "",
+    },
+    "focus": {
+        "reference": "Micah 6:8",
+        "translation": "ESV",
+        "text": "",
+    },
+    "criteria": {
+        "reference": "Matthew 6:33",
+        "translation": "ESV",
+        "text": "",
+    },
+}
+
+# Crossway requires this notice wherever the ESV is quoted.
+SCRIPTURE_NOTICE = (
+    "Scripture quotations are from the ESV Bible (The Holy Bible, English Standard "
+    "Version), copyright 2001 by Crossway, a publishing ministry of Good News "
+    "Publishers. Used by permission. All rights reserved."
+)
+
 
 PROCESS = {
     "eyebrow": "How it works",
@@ -497,6 +539,8 @@ def inject_globals():
         "footer": FOOTER,
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
+        "scripture_notice": SCRIPTURE_NOTICE,
+        "any_scripture": any(v["text"] for v in VERSES.values()),
     }
 
 
@@ -514,6 +558,7 @@ def index():
         focus=FOCUS,
         process=PROCESS,
         criteria=CRITERIA,
+        verses=VERSES,
         faqs=FAQS,
         closing=CLOSING_CTA,
     )

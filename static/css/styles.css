@@ -1328,3 +1328,61 @@ ul { margin: 0; padding: 0; list-style: none; }
   .detail__side { position: static; }
   .detail__row { grid-template-columns: 1fr; gap: 4px; }
 }
+
+
+/* ==========================================================================
+   Scripture pull-quote
+   ========================================================================== */
+
+.verse {
+  margin: 26px 0 30px;
+  padding: 0 0 0 22px;
+  border-left: 3px solid var(--gold);
+  max-width: 62ch;
+}
+.verse blockquote {
+  margin: 0 0 9px;
+  font-size: 1.04rem;
+  line-height: 1.62;
+  font-style: italic;
+  color: var(--ink);
+}
+.verse figcaption {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--flame);
+}
+.verse figcaption span {
+  color: var(--ink-soft);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+/* On navy sections the gold rule and light text carry it. */
+.section--navy .verse blockquote { color: var(--white); }
+.section--navy .verse figcaption { color: var(--gold-soft); }
+.section--navy .verse figcaption span { color: rgba(255,255,255,.62); }
+
+/* Centered section heads get a centered verse. */
+.section__head--center + .verse {
+  margin-left: auto;
+  margin-right: auto;
+  border-left: 0;
+  border-top: 3px solid var(--gold);
+  padding: 20px 0 0;
+  text-align: center;
+}
+
+.footer__scripture {
+  font-size: 0.7rem !important;
+  color: rgba(255,255,255,.38) !important;
+  max-width: 70ch;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .verse { padding-left: 16px; margin: 22px 0 26px; }
+  .verse blockquote { font-size: 0.98rem; }
+}
