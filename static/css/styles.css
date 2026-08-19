@@ -420,34 +420,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .hero__photo .photo-fallback img { width: 96px; height: auto; opacity: .9; }
 
-.float-card {
-  position: absolute;
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  padding: 13px 18px;
-  min-width: 172px;
-  z-index: 2;
-}
-.float-card span {
-  display: block;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 3px;
-}
-.float-card strong {
-  display: block;
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: var(--navy);
-  line-height: 1.2;
-}
-.float-card--top { top: 26px; left: -26px; }
-.float-card--bottom { bottom: 30px; right: -22px; border-left: 4px solid var(--flame); }
-
 /* --------------------------------------------------------------------------
    Mission (image left, copy right)
    -------------------------------------------------------------------------- */
@@ -479,26 +451,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   padding: 28px;
 }
 .frame .photo-fallback img { width: 104px; height: auto; opacity: .9; }
-
-.frame__badge {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  background: var(--navy);
-  color: var(--white);
-  border-radius: var(--radius);
-  padding: 14px 20px;
-  box-shadow: var(--shadow-md);
-  z-index: 2;
-}
-.frame__badge strong {
-  display: block;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--white);
-  line-height: 1.1;
-}
-.frame__badge span { font-size: 0.74rem; color: var(--gold-soft); letter-spacing: .06em; }
 
 .pillars {
   display: grid;
@@ -1055,8 +1007,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 
   .hero__grid { grid-template-columns: 1fr; }
   .hero__media { margin-top: 8px; }
-  .float-card--top { left: 8px; top: 14px; }
-  .float-card--bottom { right: 8px; bottom: 16px; }
 
   .split { grid-template-columns: 1fr; }
   .criteria-grid { grid-template-columns: 1fr; }

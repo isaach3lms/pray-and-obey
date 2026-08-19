@@ -116,8 +116,6 @@ HERO = {
     "secondary_cta": {"label": "See what we fund", "href": "/#what-we-fund"},
     "image": "img/hero.jpg",
     "image_alt": "A ministry team praying over a young girl",
-    "float_card_top": {"label": "Funding type", "value": "Grants, not loans"},
-    "float_card_bottom": {"label": "Where we give", "value": "U.S. and international"},
 }
 
 MISSION = {
@@ -131,8 +129,6 @@ MISSION = {
     ),
     "image": "img/mission.jpg",
     "image_alt": "A group standing arm in arm in prayer",
-    "badge_value": "Prayer first",
-    "badge_label": "Every grant begins there",
     "pillars": [
         {
             "title": "How we give",

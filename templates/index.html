@@ -23,11 +23,6 @@
       </div>
 
       <div class="hero__media">
-        <div class="float-card float-card--top">
-          <span>{{ hero.float_card_top.label }}</span>
-          <strong>{{ hero.float_card_top.value }}</strong>
-        </div>
-
         <div class="hero__photo">
           {% if has_image(hero.image) %}
             <img src="{{ url_for('static', filename=hero.image) }}" alt="{{ hero.image_alt }}">
@@ -36,11 +31,6 @@
               <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
             </div>
           {% endif %}
-        </div>
-
-        <div class="float-card float-card--bottom">
-          <span>{{ hero.float_card_bottom.label }}</span>
-          <strong>{{ hero.float_card_bottom.value }}</strong>
         </div>
       </div>
     </div>
@@ -60,10 +50,6 @@
               <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">
             </div>
           {% endif %}
-          <div class="frame__badge">
-            <strong>{{ mission.badge_value }}</strong>
-            <span>{{ mission.badge_label }}</span>
-          </div>
         </div>
       </div>
 
