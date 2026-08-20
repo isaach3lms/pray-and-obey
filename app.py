@@ -125,6 +125,74 @@ HERO = {
     "image_alt": "A ministry team praying over a young girl",
 }
 
+IMPACT = {
+    "eyebrow": "Our impact",
+    "headline": "Four ways we give.",
+    "areas": [
+        {
+            "number": "01",
+            "title": "Proclaiming the Gospel of Jesus Christ",
+            "body": (
+                "Supporting ministries that clearly and faithfully share the message of Jesus, "
+                "locally and globally, through evangelism, missions, Scripture distribution, and "
+                "Christian media."
+            ),
+        },
+        {
+            "number": "02",
+            "title": "Strengthening fathers, families, and biblical leadership",
+            "body": (
+                "Investing in organizations that model and encourage loving, Christ-centered "
+                "fathers and strong families, recognizing their essential role in building "
+                "healthy communities."
+            ),
+        },
+        {
+            "number": "03",
+            "title": "Compassion in action for the vulnerable",
+            "body": (
+                "Funding efforts that meet physical, emotional, and spiritual needs: aid for the "
+                "poor, persecuted Christians, victims of trafficking, people experiencing "
+                "homelessness, and children. This work demonstrates Christ's love through "
+                "compassion and service."
+            ),
+        },
+        {
+            "number": "04",
+            "title": "Light in the darkness through media, education, and global reach",
+            "body": (
+                "Supporting Christian radio, television, education, and outreach tools that "
+                "counter hatred and confusion with truth, unity, and hope rooted in Christ."
+            ),
+        },
+    ],
+    "statement_label": "Our impact statement",
+    "statement": (
+        "Our mission is to glorify Jesus Christ by supporting ministries that bring His love and "
+        "truth to the world, strengthening fathers and families, restoring lives through "
+        "compassion and service, and boldly advancing the Gospel to replace hatred and discord "
+        "with faith, hope, and reconciliation."
+    ),
+    # Client-supplied verse text. Because Scripture is now quoted on the site,
+    # Crossway's attribution requirement applies. See SCRIPTURE_NOTICE below.
+    "quote": (
+        "He has told you, O man, what is good; and what does the Lord require of you but to do "
+        "justice, and to love kindness, and to walk humbly with your God?"
+    ),
+    "quote_reference": "Micah 6:8",
+    "quote_translation": "ESV",
+    "guided_by": "Guided by Matthew 22:37-40 and Matthew 6:33.",
+}
+
+# Crossway requires this notice wherever ESV text is quoted. It renders directly
+# beneath the quotation, since the site has no footer.
+SCRIPTURE_NOTICE = (
+    "Scripture quotation is from the ESV Bible (The Holy Bible, English Standard Version), "
+    "copyright 2001 by Crossway, a publishing ministry of Good News Publishers. Used by "
+    "permission. All rights reserved."
+)
+
+
 MISSION = {
     "eyebrow": "Our mission",
     "headline": "Glorify Jesus Christ by investing in the people who show up.",
@@ -496,6 +564,8 @@ def index():
     return render_template(
         "index.html",
         hero=HERO,
+        impact=IMPACT,
+        scripture_notice=SCRIPTURE_NOTICE,
         mission=MISSION,
         focus=FOCUS,
         process=PROCESS,

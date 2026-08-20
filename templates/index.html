@@ -54,6 +54,39 @@
   </div>
 </section>
 
+<!-- ================= OUR IMPACT ================= -->
+<section class="section section--tint" id="impact">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="eyebrow eyebrow--start">{{ impact.eyebrow }}</span>
+      <h2>{{ impact.headline }}</h2>
+    </div>
+
+    <ol class="impact reveal">
+      {% for area in impact.areas %}
+      <li class="impact__item">
+        <span class="impact__num" aria-hidden="true">{{ area.number }}</span>
+        <h3>{{ area.title }}</h3>
+        <p>{{ area.body }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="statement reveal">
+      <span class="eyebrow eyebrow--start eyebrow--light">{{ impact.statement_label }}</span>
+      <p class="statement__body">{{ impact.statement }}</p>
+
+      <figure class="statement__quote">
+        <blockquote>{{ impact.quote }}</blockquote>
+        <figcaption>{{ impact.quote_reference }} <span>{{ impact.quote_translation }}</span></figcaption>
+      </figure>
+
+      <p class="statement__guided">{{ impact.guided_by }}</p>
+      <p class="statement__notice">{{ scripture_notice }}</p>
+    </div>
+  </div>
+</section>
+
 <!-- ================= MISSION ================= -->
 <section class="section section--navy" id="mission">
   <div class="wrap">

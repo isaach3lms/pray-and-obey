@@ -71,7 +71,8 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 |---|---|
 | `SITE` | Name, tagline, meta description, email, social links |
 | `HERO` | Headline, body, buttons, floating cards |
-| `MISSION` | Mission section copy, badge, two pillars |
+| `IMPACT` | Our Impact: four areas, impact statement, Micah 6:8 quotation, guided-by line |
+| `MISSION` | Mission section copy, two pillars |
 | `FOCUS` | The seven funding focus areas |
 | `PROCESS` | The four application steps |
 | `CRITERIA` | What we look for, good to know before applying |
@@ -166,17 +167,22 @@ The signature field captures a typed full legal name alongside the certification
 
 ## Scripture
 
-Three references are displayed as small markers, one per section. No verse text appears on the site.
-
-| Section | Reference |
+| Where | What appears |
 |---|---|
-| Mission | Matthew 22:37-40 |
-| What We Fund | Micah 6:8 |
-| Criteria | Matthew 6:33 |
+| Our Impact | Micah 6:8 quoted in full, plus a guided-by line citing Matthew 22:37-40 and Matthew 6:33 |
+| Mission | Matthew 22:37-40, reference only |
+| What We Fund | Micah 6:8, reference only |
+| Criteria | Matthew 6:33, reference only |
 
-Edit these in `VERSES` in `app.py`. Each entry holds a reference and a translation label.
+Bare references live in `VERSES`. The quoted verse and its guided-by line live in `IMPACT`.
 
-Because only references are shown and no Scripture text is quoted, no ESV license notice or copyright attribution is required. If verse text is ever added to the site, Crossway's guidelines at https://www.crossway.org/permissions/ apply and an attribution notice becomes mandatory.
+### Licensing
+
+Because Micah 6:8 is now quoted in full, Crossway's attribution requirement applies. `SCRIPTURE_NOTICE` renders directly beneath the quotation in the impact statement panel, since the site has no footer.
+
+**Do not remove that notice while any verse text is quoted.** If the quotation is ever cut back to a bare reference, the notice can go with it, because references alone carry no licensing obligation.
+
+Crossway's Standard Use Guidelines permit quoting the ESV in digital formats up to 500 verses without a formal license, provided the quotations do not exceed half of any one book or 25 percent of the work they appear in, and are not used in a commentary or biblical reference work. One verse is well inside that. Full terms: https://www.crossway.org/permissions/
 
 ---
 

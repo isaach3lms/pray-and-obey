@@ -1250,3 +1250,131 @@ main > .section:last-child { padding-bottom: calc(var(--section-y) + 20px); }
 @media (max-width: 640px) {
   .verse-ref { font-size: 0.72rem; gap: 8px; }
 }
+
+
+/* ==========================================================================
+   Our Impact
+   ========================================================================== */
+
+.impact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  list-style: none;
+  counter-reset: none;
+  margin-bottom: 44px;
+}
+
+.impact__item {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px 30px 28px;
+  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.impact__item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--gold);
+}
+
+/* Numeral doubles as the section's rhythm device, matching the four steps
+   in How It Works. */
+.impact__num {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--flame);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gold);
+  width: 38px;
+}
+
+.impact__item h3 {
+  font-size: 1.06rem;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.impact__item p { font-size: var(--fs-small); color: var(--ink-muted); }
+
+/* Impact statement panel */
+.statement {
+  background: var(--navy);
+  border-radius: var(--radius-lg);
+  padding: clamp(30px, 4vw, 52px);
+  position: relative;
+  overflow: hidden;
+}
+.statement::after {
+  content: "";
+  position: absolute;
+  right: -90px;
+  bottom: -140px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(212,160,23,.22), rgba(212,160,23,0) 70%);
+  pointer-events: none;
+}
+
+.statement__body {
+  font-size: clamp(1.05rem, 1.6vw, 1.24rem);
+  line-height: 1.6;
+  color: var(--white);
+  font-weight: 500;
+  max-width: 70ch;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 30px;
+}
+
+.statement__quote {
+  margin: 0 0 24px;
+  padding-left: 22px;
+  border-left: 3px solid var(--gold);
+  max-width: 66ch;
+  position: relative;
+  z-index: 1;
+}
+.statement__quote blockquote {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  line-height: 1.65;
+  font-style: italic;
+  color: var(--gold-soft);
+}
+.statement__quote figcaption {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.statement__quote figcaption span {
+  color: rgba(255,255,255,.6);
+  font-weight: 600;
+}
+
+.statement__guided {
+  font-size: var(--fs-small);
+  color: rgba(255,255,255,.78);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+}
+
+.statement__notice {
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,.4);
+  max-width: 74ch;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .impact { grid-template-columns: 1fr; }
+}
