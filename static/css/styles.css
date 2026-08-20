@@ -227,8 +227,7 @@ ul { margin: 0; padding: 0; list-style: none; }
    -------------------------------------------------------------------------- */
 
 .section { padding: var(--section-y) 0; }
-/* No footer, so the final section carries the page's bottom breathing room. */
-main > .section:last-child { padding-bottom: calc(var(--section-y) + 20px); }
+main > .section:last-child { padding-bottom: var(--section-y); }
 .section--tight { padding: clamp(48px, 5vw, 72px) 0; }
 .section--white { background: var(--white); }
 .section--tint { background: var(--tint); }
@@ -1377,4 +1376,51 @@ main > .section:last-child { padding-bottom: calc(var(--section-y) + 20px); }
 
 @media (max-width: 900px) {
   .impact { grid-template-columns: 1fr; }
+}
+
+
+/* ==========================================================================
+   Colophon: copyright and staff portal link
+   ========================================================================== */
+
+.colophon {
+  background: var(--navy);
+  padding: 18px 0;
+}
+
+.colophon__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.colophon p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, .72);
+}
+
+.colophon__portal {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: var(--radius-pill);
+  padding: 8px 22px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--white);
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+.colophon__portal:hover {
+  background: var(--white);
+  color: var(--navy);
+  border-color: var(--white);
+}
+
+@media (max-width: 520px) {
+  .colophon__inner { justify-content: center; text-align: center; }
 }

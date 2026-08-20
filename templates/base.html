@@ -44,6 +44,13 @@
     {% block content %}{% endblock %}
   </main>
 
+  <footer class="colophon">
+    <div class="wrap colophon__inner">
+      <p>&copy; {{ current_year }} {{ site.name }}. All rights reserved.</p>
+      <a class="colophon__portal" href="{{ url_for('portal') }}">Portal</a>
+    </div>
+  </footer>
+
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
