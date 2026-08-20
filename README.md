@@ -70,7 +70,6 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | Data structure | Controls |
 |---|---|
 | `SITE` | Name, tagline, meta description, email, social links |
-| `NAV` | Header navigation items |
 | `HERO` | Headline, body, buttons, floating cards |
 | `MISSION` | Mission section copy, badge, two pillars |
 | `FOCUS` | The seven funding focus areas |
@@ -79,7 +78,6 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `FAQS` | Accordion questions and answers |
 | `VERSES` | The three Scripture references. See below. |
 | `CLOSING_CTA` | Bottom call to action |
-| `FOOTER` | Footer link columns |
 | `ORG_TYPES` | Organization type options on the application |
 | `PRIORITIES` | Priority checkboxes in section 2 of the application |
 | `BIBLE_WILLINGNESS` | Bible distribution options |

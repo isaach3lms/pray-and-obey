@@ -97,14 +97,6 @@ SITE = {
     ],
 }
 
-NAV = [
-    {"label": "About", "href": "/#about"},
-    {"label": "Mission", "href": "/#mission"},
-    {"label": "What We Fund", "href": "/#what-we-fund"},
-    {"label": "How It Works", "href": "/#how-it-works"},
-    {"label": "FAQ", "href": "/#faq"},
-]
-
 HERO = {
     "eyebrow": "About",
     "headline_lead": "Faith that moves",
@@ -320,18 +312,6 @@ CLOSING_CTA = {
     "secondary_cta": {"label": "Read the FAQ", "href": "/#faq"},
 }
 
-FOOTER = {
-    "explore": [
-        {"label": "Mission", "href": "/#mission"},
-        {"label": "What We Fund", "href": "/#what-we-fund"},
-        {"label": "How It Works", "href": "/#how-it-works"},
-    ],
-    "apply": [
-        {"label": "Funding Application", "href": "/apply"},
-        {"label": "FAQ", "href": "/#faq"},
-    ],
-}
-
 # ---------------------------------------------------------------------------
 # Application form options
 # ---------------------------------------------------------------------------
@@ -501,8 +481,6 @@ def has_image(rel_path: str) -> bool:
 def inject_globals():
     return {
         "site": SITE,
-        "nav": NAV,
-        "footer": FOOTER,
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
     }

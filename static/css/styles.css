@@ -54,7 +54,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 
 body {
   margin: 0;
@@ -205,101 +205,30 @@ ul { margin: 0; padding: 0; list-style: none; }
 .textlink:hover span { transform: translateX(4px); }
 
 /* --------------------------------------------------------------------------
-   Navigation
+   Masthead: logo only, no navigation
    -------------------------------------------------------------------------- */
 
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
-  transition: box-shadow .2s ease, border-color .2s ease, background-color .2s ease;
-}
-
-.nav.is-scrolled {
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom-color: var(--line);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav__inner {
-  width: 100%;
-  max-width: var(--wrap);
-  margin: 0 auto;
-  padding: 12px var(--gutter);
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-.nav__brand { flex: 0 0 auto; }
-.nav__brand img { width: 192px; height: auto; }
-
-.nav__links {
-  display: flex;
-  gap: 26px;
-  margin-left: auto;
-}
-
-.nav__links a {
-  font-size: var(--fs-small);
-  font-weight: 600;
-  color: var(--ink-muted);
-  padding: 6px 0;
-  border-bottom: 2px solid transparent;
-}
-.nav__links a:hover { color: var(--navy); border-bottom-color: var(--gold); }
-
-.nav__actions { display: flex; align-items: center; gap: 10px; }
-
-.nav__toggle {
-  display: none;
-  margin-left: auto;
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  cursor: pointer;
-  padding: 11px 10px;
-}
-.nav__toggle span {
-  display: block;
-  height: 2px;
-  background: var(--navy);
-  border-radius: 2px;
-  margin: 4px 0;
-  transition: transform .2s ease, opacity .2s ease;
-}
-.nav__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.nav__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.nav__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-[hidden] { display: none !important; }
-
-.nav__mobile {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px var(--gutter) 22px;
-  border-top: 1px solid var(--line);
+.masthead {
   background: var(--white);
+  padding: 26px 0 8px;
 }
-.nav__mobile a {
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
+
+/* Inline-block so the link area matches the logo, not the full row width. */
+.masthead__brand { display: inline-block; }
+.masthead__brand img { width: 200px; height: auto; }
+
+@media (max-width: 640px) {
+  .masthead { padding: 20px 0 4px; }
+  .masthead__brand img { width: 168px; }
 }
-.nav__mobile a.btn { border-bottom: 0; margin-top: 14px; color: var(--white); }
 
 /* --------------------------------------------------------------------------
    Sections
    -------------------------------------------------------------------------- */
 
 .section { padding: var(--section-y) 0; }
+/* No footer, so the final section carries the page's bottom breathing room. */
+main > .section:last-child { padding-bottom: calc(var(--section-y) + 20px); }
 .section--tight { padding: clamp(48px, 5vw, 72px) 0; }
 .section--white { background: var(--white); }
 .section--tint { background: var(--tint); }
@@ -414,7 +343,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* Image card with floating labels */
 .hero__media { position: relative; }
 @media (min-width: 901px) {
-  .hero__media { position: sticky; top: 104px; }
+  .hero__media { position: sticky; top: 32px; }
 }
 
 .hero__photo {
@@ -952,47 +881,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .centered .btn { margin-top: 12px; }
 
 /* --------------------------------------------------------------------------
-   Footer
-   -------------------------------------------------------------------------- */
-
-.footer { background: var(--navy-900); color: rgba(255,255,255,.66); }
-
-.footer__inner {
-  width: 100%;
-  max-width: var(--wrap);
-  margin: 0 auto;
-  padding: 58px var(--gutter) 40px;
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: clamp(28px, 6vw, 80px);
-}
-
-.footer__logo { width: 232px; height: auto; margin-bottom: 18px; }
-.footer__tagline { font-size: var(--fs-small); max-width: 34ch; color: rgba(255,255,255,.62); }
-
-.footer__col h3 {
-  color: var(--white);
-  font-size: 0.74rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.footer__col li { margin-bottom: 9px; }
-.footer__col a { color: rgba(255,255,255,.66); font-size: var(--fs-small); }
-.footer__col a:hover { color: var(--gold-soft); }
-
-.footer__base {
-  border-top: 1px solid rgba(255,255,255,.12);
-  padding: 18px var(--gutter);
-  max-width: var(--wrap);
-  margin: 0 auto;
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.footer__base p { font-size: 0.78rem; color: rgba(255,255,255,.5); margin: 0; }
-
-/* --------------------------------------------------------------------------
    Motion
    -------------------------------------------------------------------------- */
 
@@ -1017,15 +905,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   .steps { grid-template-columns: repeat(2, 1fr); row-gap: 34px; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .card--wide { grid-column: span 2; }
-  .footer__inner { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 900px) {
   .checkgrid--3 { grid-template-columns: 1fr 1fr; }
-  .nav__links, .nav__actions { display: none; }
-  .nav__toggle { display: block; }
-  .nav__mobile { display: flex; }
-  .nav__mobile[hidden] { display: none; }
 
   .hero__grid { grid-template-columns: 1fr; }
   .hero__media { margin-top: 8px; }
@@ -1051,7 +934,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   .budget__row,
   .budget__foot { grid-template-columns: 1fr; }
   .budget__row { padding-bottom: 1px; }
-  .footer__inner { grid-template-columns: 1fr; }
   .hero__ctas .btn { width: 100%; }
   .frame,
   .hero__photo { aspect-ratio: 4 / 4; }
@@ -1187,7 +1069,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   gap: clamp(24px, 3vw, 44px);
   align-items: start;
 }
-.detail__side { position: sticky; top: 96px; display: grid; gap: 16px; }
+.detail__side { position: sticky; top: 24px; display: grid; gap: 16px; }
 
 .status-card {
   background: var(--tint);
