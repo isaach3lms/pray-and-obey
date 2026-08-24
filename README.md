@@ -113,14 +113,15 @@ The Criteria section no longer uses a photo. It renders as a two-column text lay
 
 | File | Where it is used | Notes |
 |---|---|---|
-| `logo-nav.png` | Header, on white | Navy wordmark. 640px export, displayed at 192px. |
-| `logo-light.png` | Footer, on navy | White wordmark. 640px export, displayed at 232px. |
-| `logo-mark.png` | Favicon, thank-you page, 404, portal sign in | Flame and book mark only, sized by height |
-| `logo-full.png` | Open Graph share image | Full lockup at 1200px |
+| `logo-nav.png` | Masthead, on white | Word-cloud lockup with Matthew 3:11. 900px export, displayed at 264px desktop and 214px mobile. |
+| `logo-mark.png` | Favicon, thank-you page, 404, portal sign in | Flame and book mark only, from the clean lockup. Sized by height. |
+| `logo-full.png` | Open Graph share image | Word-cloud lockup at 1200px |
 
-All four carry the Matthew 3:11 verse line and derive from the two supplied source files. Each flat background was removed using distance-based alpha so anti-aliased edges feather rather than stair-step, which is what lets them sit cleanly on any surface.
+Each source file's flat background was removed using distance-based alpha so anti-aliased edges feather rather than stair-step.
 
-Because the verse line makes the lockup taller than the previous version, the mark is sized by height rather than width wherever it appears alone.
+The masthead sits at 264px rather than the 200px used by the previous lockup. The surrounding words render at roughly 6px cap height at 200px, which is too small to read; 264px brings them to a legible size.
+
+`logo-mark.png` is deliberately cut from the plain lockup, not the word-cloud version. Cropping the icon out of the word cloud would slice through "service", "jesus", "love", and "faith".
 
 ---
 

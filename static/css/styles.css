@@ -215,11 +215,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* Inline-block so the link area matches the logo, not the full row width. */
 .masthead__brand { display: inline-block; }
-.masthead__brand img { width: 200px; height: auto; }
+.masthead__brand img { width: 264px; height: auto; }
 
 @media (max-width: 640px) {
   .masthead { padding: 20px 0 4px; }
-  .masthead__brand img { width: 168px; }
+  .masthead__brand img { width: 214px; }
 }
 
 /* --------------------------------------------------------------------------
