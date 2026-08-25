@@ -97,6 +97,16 @@ SITE = {
     ],
 }
 
+NAV = [
+    {"label": "About", "href": "/#about"},
+    {"label": "Impact", "href": "/#impact"},
+    {"label": "Mission", "href": "/#mission"},
+    {"label": "What We Fund", "href": "/#what-we-fund"},
+    {"label": "How It Works", "href": "/#how-it-works"},
+    {"label": "FAQ", "href": "/#faq"},
+]
+
+
 HERO = {
     "eyebrow": "About",
     "headline_lead": "Faith that moves",
@@ -549,6 +559,7 @@ def has_image(rel_path: str) -> bool:
 def inject_globals():
     return {
         "site": SITE,
+        "nav": NAV,
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
     }

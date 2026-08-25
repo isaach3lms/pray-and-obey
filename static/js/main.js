@@ -1,7 +1,46 @@
-/* Pray and Obey Ministries: grant budget total and scroll reveal. */
+/* Pray and Obey Ministries: nav behavior, mobile menu, budget total, scroll reveal. */
 
 (function () {
   "use strict";
+
+  var nav = document.getElementById("nav");
+  var toggle = document.querySelector(".nav__toggle");
+  var mobile = document.getElementById("mobile-menu");
+
+  /* Sticky nav shadow */
+  if (nav) {
+    var onScroll = function () {
+      nav.classList.toggle("is-scrolled", window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* Mobile menu */
+  if (toggle && mobile) {
+    toggle.addEventListener("click", function () {
+      var open = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!open));
+      toggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
+      mobile.hidden = open;
+    });
+
+    mobile.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") {
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open menu");
+        mobile.hidden = true;
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !mobile.hidden) {
+        toggle.setAttribute("aria-expanded", "false");
+        mobile.hidden = true;
+        toggle.focus();
+      }
+    });
+  }
 
   /* Grant budget: live total of the "amount requested" column */
   var budgetInputs = document.querySelectorAll(".js-budget-request");

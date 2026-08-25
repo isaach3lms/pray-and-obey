@@ -70,6 +70,7 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | Data structure | Controls |
 |---|---|
 | `SITE` | Name, tagline, meta description, email, social links |
+| `NAV` | Header and mobile menu links |
 | `HERO` | Headline, body, buttons, floating cards |
 | `IMPACT` | Our Impact: four areas, impact statement, Micah 6:8 quotation, guided-by line |
 | `MISSION` | Mission section copy, two pillars |

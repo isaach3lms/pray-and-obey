@@ -22,11 +22,32 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="masthead">
-    <div class="wrap">
-      <a class="masthead__brand" href="/" aria-label="{{ site.name }} home">
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="{{ site.name }} home">
         <img src="{{ url_for('static', filename='img/logo-nav.png') }}" alt="{{ site.name }}" width="900" height="434">
       </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        {% for item in nav %}
+        <a href="{{ item.href }}">{{ item.label }}</a>
+        {% endfor %}
+      </nav>
+
+      <div class="nav__actions">
+        <a class="btn btn--primary" href="/apply">Apply for funding</a>
+      </div>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="mobile-menu" hidden>
+      {% for item in nav %}
+      <a href="{{ item.href }}">{{ item.label }}</a>
+      {% endfor %}
+      <a class="btn btn--primary btn--block" href="/apply">Apply for funding</a>
     </div>
   </header>
 
