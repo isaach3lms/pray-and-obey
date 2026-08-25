@@ -114,15 +114,14 @@ The Criteria section no longer uses a photo. It renders as a two-column text lay
 
 | File | Where it is used | Notes |
 |---|---|---|
-| `logo-nav.png` | Masthead, on white | Word-cloud lockup with Matthew 3:11. 900px export, displayed at 264px desktop and 214px mobile. |
-| `logo-mark.png` | Favicon, thank-you page, 404, portal sign in | Flame and book mark only, from the clean lockup. Sized by height. |
-| `logo-full.png` | Open Graph share image | Word-cloud lockup at 1200px |
+| `logo-nav.png` | Header, on white | Plain lockup with Matthew 3:11. 640px export, displayed at 186px. |
+| `logo-mark.png` | Favicon, thank-you page, 404, portal sign in | Flame and book mark only. Sized by height. |
+| `logo-full.png` | Open Graph share image | Plain lockup at 1200px |
+| `logo-badge.png` | Word cloud, Our Impact | Circular seal, masked to a clean circle at 420px |
 
 Each source file's flat background was removed using distance-based alpha so anti-aliased edges feather rather than stair-step.
 
-The masthead sits at 264px rather than the 200px used by the previous lockup. The surrounding words render at roughly 6px cap height at 200px, which is too small to read; 264px brings them to a legible size.
-
-`logo-mark.png` is deliberately cut from the plain lockup, not the word-cloud version. Cropping the icon out of the word cloud would slice through "service", "jesus", "love", and "faith".
+`logo-badge.png` is the circular seal, extracted from a client screenshot and masked to a circle slightly inside the navy ring so the source image's soft outer edge does not show as a grey halo. It is used only inside the Our Impact word cloud.
 
 ---
 
@@ -175,7 +174,9 @@ The signature field captures a typed full legal name alongside the certification
 
 ### Word cloud
 
-The word cloud in the Our Impact section is rendered as HTML text, not an image. Each entry in `IMPACT["cloud"]` carries a `word`, a `weight` from 2 to 5 that sets the display size, and a `tone` of either `navy` or `muted` that sets the color. Adding, removing, or reweighting a word requires no design work and stays sharp at any screen density.
+The words in the Our Impact cloud are rendered as HTML text, not an image. Each entry in `IMPACT["cloud"]` carries a `word`, a `weight` from 2 to 5 that sets the display size, and a `tone` of either `navy` or `muted` that sets the color. Adding, removing, or reweighting a word requires no design work and stays sharp at any screen density.
+
+The circular seal floats right within the cloud and the words wrap around it using `shape-outside: circle(50%)`. Below 520px the seal centers above the words instead.
 | Mission | Matthew 22:37-40, reference only |
 | What We Fund | Micah 6:8, reference only |
 | Criteria | Matthew 6:33, reference only |

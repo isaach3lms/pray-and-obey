@@ -175,18 +175,21 @@ IMPACT = {
             ),
         },
     ],
-    # Word cloud. "weight" drives display size, 1 smallest to 5 largest.
-    # "tone" selects the color: navy or muted.
+    # Word cloud rendered as text, not an image, so it stays sharp at any
+    # density and reflows on narrow screens. "weight" sets display size,
+    # 2 smallest to 5 largest. "tone" selects navy or muted.
     "cloud": [
         {"word": "fathers", "weight": 2, "tone": "muted"},
         {"word": "compassion", "weight": 4, "tone": "muted"},
         {"word": "jesus", "weight": 5, "tone": "navy"},
-        {"word": "love", "weight": 4, "tone": "navy"},
         {"word": "service", "weight": 3, "tone": "muted"},
+        {"word": "love", "weight": 4, "tone": "navy"},
         {"word": "faith", "weight": 5, "tone": "navy"},
         {"word": "families", "weight": 3, "tone": "muted"},
         {"word": "global", "weight": 2, "tone": "muted"},
     ],
+    "badge": "img/logo-badge.png",
+    "badge_alt": "Pray and Obey Ministries seal",
     "qa": [
         {
             "question": "What would you like more of in the world?",

@@ -54,7 +54,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 108px; }
+html { scroll-behavior: smooth; scroll-padding-top: 92px; }
 
 body {
   margin: 0;
@@ -231,7 +231,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .nav__brand { flex: 0 0 auto; }
-.nav__brand img { width: 192px; height: auto; display: block; }
+.nav__brand img { width: 186px; height: auto; display: block; }
 
 .nav__links {
   display: flex;
@@ -412,7 +412,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 /* Image card with floating labels */
 .hero__media { position: relative; }
 @media (min-width: 901px) {
-  .hero__media { position: sticky; top: 112px; }
+  .hero__media { position: sticky; top: 96px; }
 }
 
 .hero__photo {
@@ -1145,7 +1145,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
   gap: clamp(24px, 3vw, 44px);
   align-items: start;
 }
-.detail__side { position: sticky; top: 108px; display: grid; gap: 16px; }
+.detail__side { position: sticky; top: 92px; display: grid; gap: 16px; }
 
 .status-card {
   background: var(--tint);
@@ -1391,26 +1391,42 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 }
 
 .cloud {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: center;
-  gap: 6px 18px;
-  list-style: none;
+  position: relative;
   margin: 0 0 26px;
   padding: 0 0 24px;
   border-bottom: 1px solid var(--line);
 }
 
+/* The seal sits in the top right and the words wrap around it, so the block
+   reads as one composition rather than an image beside a list. */
+.cloud__badge {
+  float: right;
+  width: 40%;
+  max-width: 168px;
+  height: auto;
+  margin: 0 0 10px 18px;
+  shape-outside: circle(50%);
+}
+
+.cloud__words {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .cloud__word {
-  line-height: 1.05;
-  font-weight: 500;
+  line-height: 1.1;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
-.cloud__word--w5 { font-size: clamp(2.1rem, 4.4vw, 3.1rem); font-weight: 400; }
-.cloud__word--w4 { font-size: clamp(1.5rem, 3vw, 2.15rem); font-weight: 400; }
-.cloud__word--w3 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); }
-.cloud__word--w2 { font-size: clamp(0.95rem, 1.7vw, 1.2rem); }
+.cloud__word--w5 { font-size: clamp(2rem, 4.2vw, 2.9rem); }
+.cloud__word--w4 { font-size: clamp(1.45rem, 2.9vw, 2rem); }
+.cloud__word--w3 { font-size: clamp(1.1rem, 2.1vw, 1.45rem); }
+.cloud__word--w2 { font-size: clamp(0.92rem, 1.6vw, 1.12rem); }
 
 .cloud__word--navy { color: var(--navy); }
 .cloud__word--muted { color: #8A93A3; }
@@ -1506,6 +1522,16 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 @media (max-width: 900px) {
   .themes { grid-template-columns: 1fr; }
   .qa { text-align: left; }
+}
+
+@media (max-width: 520px) {
+  .cloud__badge {
+    float: none;
+    display: block;
+    margin: 0 auto 18px;
+    width: 132px;
+  }
+  .cloud__words { justify-content: center; }
 }
 
 /* ==========================================================================

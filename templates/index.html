@@ -76,11 +76,14 @@
       </ol>
 
       <aside class="themes__aside">
-        <ul class="cloud" aria-label="Words that describe our giving">
-          {% for w in impact.cloud %}
-          <li class="cloud__word cloud__word--w{{ w.weight }} cloud__word--{{ w.tone }}">{{ w.word }}</li>
-          {% endfor %}
-        </ul>
+        <div class="cloud">
+          <img class="cloud__badge" src="{{ url_for('static', filename=impact.badge) }}" alt="{{ impact.badge_alt }}" width="420" height="420">
+          <ul class="cloud__words" aria-label="Words that describe our giving">
+            {% for w in impact.cloud %}
+            <li class="cloud__word cloud__word--w{{ w.weight }} cloud__word--{{ w.tone }}">{{ w.word }}</li>
+            {% endfor %}
+          </ul>
+        </div>
 
         <dl class="qa">
           {% for pair in impact.qa %}
