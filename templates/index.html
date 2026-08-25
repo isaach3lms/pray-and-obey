@@ -62,15 +62,34 @@
       <h2>{{ impact.headline }}</h2>
     </div>
 
-    <ol class="impact reveal">
-      {% for area in impact.areas %}
-      <li class="impact__item">
-        <span class="impact__num" aria-hidden="true">{{ area.number }}</span>
-        <h3>{{ area.title }}</h3>
-        <p>{{ area.body }}</p>
-      </li>
-      {% endfor %}
-    </ol>
+    <div class="themes reveal">
+      <ol class="themes__list">
+        {% for area in impact.areas %}
+        <li class="theme">
+          <span class="theme__num" aria-hidden="true">{{ area.number }}</span>
+          <div>
+            <h3>{{ area.title }}</h3>
+            <p>{{ area.body }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+
+      <aside class="themes__aside">
+        <ul class="cloud" aria-label="Words that describe our giving">
+          {% for w in impact.cloud %}
+          <li class="cloud__word cloud__word--w{{ w.weight }} cloud__word--{{ w.tone }}">{{ w.word }}</li>
+          {% endfor %}
+        </ul>
+
+        <dl class="qa">
+          {% for pair in impact.qa %}
+          <dt>{{ pair.question }}</dt>
+          <dd>{{ pair.answer }}</dd>
+          {% endfor %}
+        </dl>
+      </aside>
+    </div>
 
     <div class="statement reveal">
       <span class="eyebrow eyebrow--start eyebrow--light">{{ impact.statement_label }}</span>

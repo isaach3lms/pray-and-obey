@@ -137,10 +137,10 @@ HERO = {
 
 IMPACT = {
     "eyebrow": "Our impact",
-    "headline": "Four ways we give.",
+    "headline": "Key themes.",
     "areas": [
         {
-            "number": "01",
+            "number": "1",
             "title": "Proclaiming the Gospel of Jesus Christ",
             "body": (
                 "Supporting ministries that clearly and faithfully share the message of Jesus, "
@@ -149,49 +149,70 @@ IMPACT = {
             ),
         },
         {
-            "number": "02",
+            "number": "2",
             "title": "Strengthening fathers, families, and biblical leadership",
             "body": (
                 "Investing in organizations that model and encourage loving, Christ-centered "
-                "fathers and strong families, recognizing their essential role in building "
+                "fathers and strong families, recognizing their essential role in creating "
                 "healthy communities."
             ),
         },
         {
-            "number": "03",
+            "number": "3",
             "title": "Compassion in action for the vulnerable",
             "body": (
-                "Funding efforts that meet physical, emotional, and spiritual needs: aid for the "
-                "poor, persecuted Christians, victims of trafficking, people experiencing "
-                "homelessness, and children. This work demonstrates Christ's love through "
-                "compassion and service."
+                "Funding efforts that meet physical, emotional, and spiritual needs, including "
+                "aid for the poor, persecuted Christians, victims of trafficking, the homeless, "
+                "and children, demonstrating Christ's love through service."
             ),
         },
         {
-            "number": "04",
-            "title": "Light in the darkness through media, education, and global reach",
+            "number": "4",
+            "title": "Light in darkness through media, education, and global reach",
             "body": (
                 "Supporting Christian radio, television, education, and outreach tools that "
                 "counter hatred and confusion with truth, unity, and hope rooted in Christ."
             ),
         },
     ],
-    "statement_label": "Our impact statement",
+    # Word cloud. "weight" drives display size, 1 smallest to 5 largest.
+    # "tone" selects the color: navy or muted.
+    "cloud": [
+        {"word": "fathers", "weight": 2, "tone": "muted"},
+        {"word": "compassion", "weight": 4, "tone": "muted"},
+        {"word": "jesus", "weight": 5, "tone": "navy"},
+        {"word": "love", "weight": 4, "tone": "navy"},
+        {"word": "service", "weight": 3, "tone": "muted"},
+        {"word": "faith", "weight": 5, "tone": "navy"},
+        {"word": "families", "weight": 3, "tone": "muted"},
+        {"word": "global", "weight": 2, "tone": "muted"},
+    ],
+    "qa": [
+        {
+            "question": "What would you like more of in the world?",
+            "answer": "More Jesus and loving fathers.",
+        },
+        {
+            "question": "What would you like less of in the world?",
+            "answer": "Hatred and discord.",
+        },
+    ],
+    "statement_label": "Impact statement",
     "statement": (
         "Our mission is to glorify Jesus Christ by supporting ministries that bring His love and "
         "truth to the world, strengthening fathers and families, restoring lives through "
         "compassion and service, and boldly advancing the Gospel to replace hatred and discord "
         "with faith, hope, and reconciliation."
     ),
-    # Client-supplied verse text. Because Scripture is now quoted on the site,
-    # Crossway's attribution requirement applies. See SCRIPTURE_NOTICE below.
+    # Client-supplied verse text. Because Scripture is quoted, Crossway's
+    # attribution requirement applies. See SCRIPTURE_NOTICE below.
     "quote": (
         "He has told you, O man, what is good; and what does the Lord require of you but to do "
         "justice, and to love kindness, and to walk humbly with your God?"
     ),
     "quote_reference": "Micah 6:8",
     "quote_translation": "ESV",
-    "guided_by": "Guided by Matthew 22:37-40 and Matthew 6:33.",
+    "guided_by": "Matthew 22:37-40 and Matthew 6:33, ESV.",
 }
 
 # Crossway requires this notice wherever ESV text is quoted. It renders directly

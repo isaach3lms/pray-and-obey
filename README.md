@@ -72,7 +72,7 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `SITE` | Name, tagline, meta description, email, social links |
 | `NAV` | Header and mobile menu links |
 | `HERO` | Headline, body, buttons, floating cards |
-| `IMPACT` | Our Impact: four areas, impact statement, Micah 6:8 quotation, guided-by line |
+| `IMPACT` | Our Impact: four key themes, word cloud, question and answer pairs, impact statement, Micah 6:8 quotation, guided-by line |
 | `MISSION` | Mission section copy, two pillars |
 | `FOCUS` | The seven funding focus areas |
 | `PROCESS` | The four application steps |
@@ -172,6 +172,10 @@ The signature field captures a typed full legal name alongside the certification
 | Where | What appears |
 |---|---|
 | Our Impact | Micah 6:8 quoted in full, plus a guided-by line citing Matthew 22:37-40 and Matthew 6:33 |
+
+### Word cloud
+
+The word cloud in the Our Impact section is rendered as HTML text, not an image. Each entry in `IMPACT["cloud"]` carries a `word`, a `weight` from 2 to 5 that sets the display size, and a `tone` of either `navy` or `muted` that sets the color. Adding, removing, or reweighting a word requires no design work and stays sharp at any screen density.
 | Mission | Matthew 22:37-40, reference only |
 | What We Fund | Micah 6:8, reference only |
 | Criteria | Matthew 6:33, reference only |

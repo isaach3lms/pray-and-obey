@@ -1329,52 +1329,107 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 
 
 /* ==========================================================================
-   Our Impact
+   Our Impact: key themes, word cloud, impact statement
    ========================================================================== */
 
-.impact {
+.themes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  list-style: none;
-  counter-reset: none;
-  margin-bottom: 44px;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(32px, 5vw, 68px);
+  align-items: start;
+  margin-bottom: 46px;
 }
 
-.impact__item {
+/* Numbered themes */
+.themes__list {
+  display: grid;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.theme {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.theme__num {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.theme h3 {
+  font-size: 1.02rem;
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+.theme p {
+  font-size: var(--fs-small);
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* Word cloud. Rendered as text, not an image, so it stays sharp at any size
+   and reflows on narrow screens. */
+.themes__aside {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 30px 30px 28px;
-  position: relative;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-}
-.impact__item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--gold);
+  padding: clamp(26px, 3vw, 40px);
 }
 
-/* Numeral doubles as the section's rhythm device, matching the four steps
-   in How It Works. */
-.impact__num {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: .18em;
-  color: var(--flame);
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--gold);
-  width: 38px;
+.cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px 18px;
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--line);
 }
 
-.impact__item h3 {
-  font-size: 1.06rem;
-  line-height: 1.35;
-  margin-bottom: 10px;
+.cloud__word {
+  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
-.impact__item p { font-size: var(--fs-small); color: var(--ink-muted); }
+.cloud__word--w5 { font-size: clamp(2.1rem, 4.4vw, 3.1rem); font-weight: 400; }
+.cloud__word--w4 { font-size: clamp(1.5rem, 3vw, 2.15rem); font-weight: 400; }
+.cloud__word--w3 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); }
+.cloud__word--w2 { font-size: clamp(0.95rem, 1.7vw, 1.2rem); }
+
+.cloud__word--navy { color: var(--navy); }
+.cloud__word--muted { color: #8A93A3; }
+
+/* Question and answer pairs */
+.qa { margin: 0; text-align: right; }
+.qa dt {
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--ink-muted);
+}
+.qa dd {
+  margin: 0 0 12px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--navy);
+}
+.qa dd:last-child { margin-bottom: 0; }
 
 /* Impact statement panel */
 .statement {
@@ -1407,7 +1462,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 }
 
 .statement__quote {
-  margin: 0 0 24px;
+  margin: 0 0 22px;
   padding-left: 22px;
   border-left: 3px solid var(--gold);
   max-width: 66ch;
@@ -1428,10 +1483,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
   text-transform: uppercase;
   color: var(--white);
 }
-.statement__quote figcaption span {
-  color: rgba(255,255,255,.6);
-  font-weight: 600;
-}
+.statement__quote figcaption span { color: rgba(255,255,255,.6); font-weight: 600; }
 
 .statement__guided {
   font-size: var(--fs-small);
@@ -1452,9 +1504,9 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 }
 
 @media (max-width: 900px) {
-  .impact { grid-template-columns: 1fr; }
+  .themes { grid-template-columns: 1fr; }
+  .qa { text-align: left; }
 }
-
 
 /* ==========================================================================
    Colophon: copyright and staff portal link
