@@ -1392,44 +1392,46 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 
 .cloud {
   position: relative;
+  container-type: inline-size;
+  aspect-ratio: 874 / 550;
   margin: 0 0 26px;
-  padding: 0 0 24px;
+  padding: 0 0 20px;
   border-bottom: 1px solid var(--line);
 }
 
-/* The seal sits in the top right and the words wrap around it, so the block
-   reads as one composition rather than an image beside a list. */
+/* The seal anchors the top right, matching the client's arrangement. */
 .cloud__badge {
-  float: right;
-  width: 40%;
-  max-width: 168px;
+  position: absolute;
+  top: 0;
+  right: 1%;
+  width: 38%;
   height: auto;
-  margin: 0 0 10px 18px;
-  shape-outside: circle(50%);
+  z-index: 1;
 }
 
 .cloud__words {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 16px;
+  position: absolute;
+  inset: 0;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+/* Each word is placed by percentage, so the whole cloud scales with its
+   container instead of being a fixed image. */
 .cloud__word {
-  line-height: 1.1;
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  font-size: var(--size);
+  line-height: 1;
   font-weight: 400;
   letter-spacing: -0.01em;
+  white-space: nowrap;
 }
-.cloud__word--w5 { font-size: clamp(2rem, 4.2vw, 2.9rem); }
-.cloud__word--w4 { font-size: clamp(1.45rem, 2.9vw, 2rem); }
-.cloud__word--w3 { font-size: clamp(1.1rem, 2.1vw, 1.45rem); }
-.cloud__word--w2 { font-size: clamp(0.92rem, 1.6vw, 1.12rem); }
 
 .cloud__word--navy { color: var(--navy); }
-.cloud__word--muted { color: #8A93A3; }
+.cloud__word--muted { color: #9AA2B0; }
 
 /* Question and answer pairs */
 .qa { margin: 0; text-align: right; }
@@ -1524,14 +1526,32 @@ main > .section:last-child { padding-bottom: var(--section-y); }
   .qa { text-align: left; }
 }
 
-@media (max-width: 520px) {
-  .cloud__badge {
-    float: none;
-    display: block;
-    margin: 0 auto 18px;
-    width: 132px;
+@media (max-width: 560px) {
+  .cloud {
+    aspect-ratio: auto;
+    container-type: normal;
+    padding-bottom: 24px;
   }
-  .cloud__words { justify-content: center; }
+  .cloud__badge {
+    position: static;
+    display: block;
+    width: 136px;
+    margin: 0 auto 20px;
+  }
+  .cloud__words {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px 14px;
+  }
+  /* Scale from the unitless weight so the size hierarchy survives the
+     switch from the positioned layout to a simple flow. */
+  .cloud__word {
+    position: static;
+    font-size: calc(var(--n) * 0.157rem + 0.27rem);
+  }
 }
 
 /* ==========================================================================

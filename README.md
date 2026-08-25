@@ -174,9 +174,18 @@ The signature field captures a typed full legal name alongside the certification
 
 ### Word cloud
 
-The words in the Our Impact cloud are rendered as HTML text, not an image. Each entry in `IMPACT["cloud"]` carries a `word`, a `weight` from 2 to 5 that sets the display size, and a `tone` of either `navy` or `muted` that sets the color. Adding, removing, or reweighting a word requires no design work and stays sharp at any screen density.
+The words in the Our Impact cloud are rendered as positioned HTML text, not an image, so they stay sharp at any screen density. Each entry in `IMPACT["cloud"]` carries:
 
-The circular seal floats right within the cloud and the words wrap around it using `shape-outside: circle(50%)`. Below 520px the seal centers above the words instead.
+| Key | Purpose |
+|---|---|
+| `word` | The text |
+| `size` | Display size in container-query width units (`cqw`) |
+| `top` / `left` | Position as a percentage of the cloud box |
+| `tone` | `navy` or `muted` |
+
+The cloud box uses `container-type: inline-size` with a fixed aspect ratio, so the whole arrangement scales with its container rather than the viewport. Moving a word is a coordinate change in `app.py`, not a design task.
+
+Below 560px the scatter would collide, so the words fall back to a centered flow and the seal centers above them. The size hierarchy is preserved there by scaling from `--n`, the unitless copy of `size`. `--size` is a length and cannot be multiplied by another length inside `calc()`, which is why both forms are emitted.
 | Mission | Matthew 22:37-40, reference only |
 | What We Fund | Micah 6:8, reference only |
 | Criteria | Matthew 6:33, reference only |

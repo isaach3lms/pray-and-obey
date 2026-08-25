@@ -80,7 +80,8 @@
           <img class="cloud__badge" src="{{ url_for('static', filename=impact.badge) }}" alt="{{ impact.badge_alt }}" width="420" height="420">
           <ul class="cloud__words" aria-label="Words that describe our giving">
             {% for w in impact.cloud %}
-            <li class="cloud__word cloud__word--w{{ w.weight }} cloud__word--{{ w.tone }}">{{ w.word }}</li>
+            <li class="cloud__word cloud__word--{{ w.tone }}"
+                style="--n: {{ w.size }}; --size: {{ w.size }}cqw; --top: {{ w.top }}%; --left: {{ w.left }}%;">{{ w.word }}</li>
             {% endfor %}
           </ul>
         </div>

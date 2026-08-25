@@ -175,18 +175,20 @@ IMPACT = {
             ),
         },
     ],
-    # Word cloud rendered as text, not an image, so it stays sharp at any
-    # density and reflows on narrow screens. "weight" sets display size,
-    # 2 smallest to 5 largest. "tone" selects navy or muted.
+    # Word cloud rendered as positioned text, not an image, so it stays sharp
+    # at any density. "size" is in container-query width units and "top"/"left"
+    # are percentages of the cloud box, which reproduces the client's scattered
+    # arrangement while scaling with the container. Below 520px the words fall
+    # back to a simple centered flow so nothing overlaps.
     "cloud": [
-        {"word": "fathers", "weight": 2, "tone": "muted"},
-        {"word": "compassion", "weight": 4, "tone": "muted"},
-        {"word": "jesus", "weight": 5, "tone": "navy"},
-        {"word": "service", "weight": 3, "tone": "muted"},
-        {"word": "love", "weight": 4, "tone": "navy"},
-        {"word": "faith", "weight": 5, "tone": "navy"},
-        {"word": "families", "weight": 3, "tone": "muted"},
-        {"word": "global", "weight": 2, "tone": "muted"},
+        {"word": "fathers",    "size": 3.7,  "top": 12, "left": 24, "tone": "muted"},
+        {"word": "compassion", "size": 6.4,  "top": 22, "left": 5,  "tone": "muted"},
+        {"word": "jesus",      "size": 10.4, "top": 33, "left": 10, "tone": "navy"},
+        {"word": "service",    "size": 5.2,  "top": 60, "left": 17, "tone": "muted"},
+        {"word": "love",       "size": 7.2,  "top": 49, "left": 45, "tone": "navy"},
+        {"word": "faith",      "size": 9.8,  "top": 66, "left": 44, "tone": "navy"},
+        {"word": "families",   "size": 4.4,  "top": 64, "left": 69, "tone": "muted"},
+        {"word": "global",     "size": 3.3,  "top": 88, "left": 81, "tone": "muted"},
     ],
     "badge": "img/logo-badge.png",
     "badge_alt": "Pray and Obey Ministries seal",
