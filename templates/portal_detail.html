@@ -76,6 +76,7 @@
             <li><span>Budget total</span><strong>{{ a.budget_grand_total or '-' }}</strong></li>
             <li><span>Org type</span><strong>{{ a.org_type or '-' }}</strong></li>
             <li><span>Certified</span><strong>{{ 'Yes' if a.certified else 'No' }}</strong></li>
+            <li><span>Documents</span><strong>{{ a.files | length }}</strong></li>
           </ul>
         </div>
       </aside>
@@ -124,6 +125,23 @@
           <pre class="budget-lines">{{ a.budget_lines }}</pre>
         </div>
         {% endif %}
+
+        <div class="detail__block">
+          <div class="detail__label">Uploaded documents</div>
+          {% if a.files %}
+          <ul class="filelist">
+            {% for f in a.files %}
+            <li>
+              <a href="{{ url_for('portal_download', file_id=f.id) }}">
+                {{ f.filename }} <span>{{ f.size_label }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>No documents were attached to this application.</p>
+          {% endif %}
+        </div>
 
         {{ row('Budget total', a.budget_grand_total) }}
         {{ row('Attachments confirmed ready', a.attachments) }}

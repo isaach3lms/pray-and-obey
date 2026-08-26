@@ -34,7 +34,7 @@
 </section>
 
 <div class="wrap">
-  <form class="form-shell" method="post" action="{{ url_for('apply_for_funding') }}" novalidate>
+  <form class="form-shell" method="post" action="{{ url_for('apply_for_funding') }}" enctype="multipart/form-data" novalidate>
 
     <input type="hidden" name="form_started" value="{{ form_started }}">
     <div class="hp-field" aria-hidden="true">
@@ -191,8 +191,8 @@
       </div>
       <input type="hidden" name="budget_grand_total" id="budget-total-value" value="">
 
-      <h3 class="subhead">Required attachments</h3>
-      <p class="fieldset__note">Confirm which documents you have ready. We will request them by email once your application is under review. Please do not send financial documents through this form.</p>
+      <h3 class="subhead">Supporting documents</h3>
+      <p class="fieldset__note">Attach whichever of these you have. Anything you cannot attach now, we will request by email once your application is under review.</p>
 
       <div class="field-row field-row--single">
         <div class="field">
@@ -203,6 +203,21 @@
               <span>{{ a }}</span>
             </label>
             {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row field-row--single">
+        <div class="field">
+          <label for="documents">Upload documents</label>
+          <span class="hint">Up to {{ max_files }} files, {{ max_file_mb }} MB each and {{ max_total_mb }} MB in total. Accepted: {{ upload_extensions | join(', ') }}.</span>
+          <div class="upload">
+            <input type="file" id="documents" name="documents" multiple
+                   accept="{{ upload_extensions | join(',') }}">
+            <label class="upload__face" for="documents">
+              <span class="upload__cue">Choose files</span>
+              <span class="upload__state" id="upload-state">No files selected</span>
+            </label>
           </div>
         </div>
       </div>

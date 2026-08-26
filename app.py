@@ -30,9 +30,16 @@ from flask_login import (
     logout_user,
 )
 
+from werkzeug.utils import secure_filename
+
 from models import (
+    ALLOWED_UPLOADS,
+    MAX_FILES,
+    MAX_FILE_BYTES,
+    MAX_TOTAL_BYTES,
     STATUSES,
     Application,
+    ApplicationFile,
     User,
     database_uri,
     db,
@@ -51,6 +58,9 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FLASK_ENV") != "development"
+# Hard ceiling on the whole request. Anything larger is rejected by Flask
+# before it reaches application code.
+app.config["MAX_CONTENT_LENGTH"] = MAX_TOTAL_BYTES + (2 * 1024 * 1024)
 
 db.init_app(app)
 
@@ -500,6 +510,71 @@ REQUIRED_FIELDS = [
 # ---------------------------------------------------------------------------
 
 
+def collect_uploads(files):
+    """Validate uploaded documents.
+
+    Returns (accepted, errors). Extension and content type must BOTH be on the
+    allow list, since checking only one lets a renamed executable or a
+    script-bearing SVG through.
+    """
+    accepted, errors = [], []
+    total = 0
+
+    real = [f for f in files if f and f.filename]
+    if not real:
+        return accepted, errors
+
+    if len(real) > MAX_FILES:
+        errors.append(f"Please attach no more than {MAX_FILES} documents.")
+        return accepted, errors
+
+    for f in real:
+        name = secure_filename(f.filename)
+        if not name:
+            errors.append("One of the files had a name we could not read.")
+            continue
+
+        ext = os.path.splitext(name)[1].lower()
+        allowed_types = ALLOWED_UPLOADS.get(ext)
+        if allowed_types is None:
+            errors.append(f"{name}: that file type is not accepted.")
+            continue
+
+        # Read once, measure, and keep the bytes. Never trust a client-sent
+        # content length.
+        blob = f.read()
+        size = len(blob)
+        if size == 0:
+            errors.append(f"{name}: the file appears to be empty.")
+            continue
+        if size > MAX_FILE_BYTES:
+            errors.append(f"{name}: larger than {MAX_FILE_BYTES // (1024 * 1024)} MB.")
+            continue
+
+        ctype = (f.mimetype or "").lower()
+        if ctype not in allowed_types:
+            errors.append(f"{name}: the file contents do not match its extension.")
+            continue
+
+        total += size
+        if total > MAX_TOTAL_BYTES:
+            errors.append(
+                f"Attachments total more than {MAX_TOTAL_BYTES // (1024 * 1024)} MB."
+            )
+            break
+
+        accepted.append(
+            ApplicationFile(
+                filename=name,
+                content_type=ctype,
+                size_bytes=size,
+                data=blob,
+            )
+        )
+
+    return accepted, errors
+
+
 def send_application_email(payload: dict) -> bool:
     """Send the application via the Resend HTTP API (port 443)."""
     if not RESEND_API_KEY:
@@ -628,9 +703,14 @@ def apply_for_funding():
         if "@" not in form_data.get("email", ""):
             missing.append("A valid email address")
 
+        uploads, upload_errors = collect_uploads(request.files.getlist("documents"))
+
         if missing:
             flash("Please complete these fields: " + ", ".join(missing), "error")
-        else:
+        for problem in upload_errors:
+            flash(problem, "error")
+
+        if not missing and not upload_errors:
             budget_rows = []
             for i in range(BUDGET_ROWS):
                 desc = form_data.get(f"budget_desc_{i}", "")
@@ -678,6 +758,11 @@ def apply_for_funding():
                 "Budget lines": "<br>".join(budget_rows) if budget_rows else "-",
                 "Budget total": form_data.get("budget_grand_total"),
                 "Attachments confirmed ready": ", ".join(request.form.getlist("attachments")),
+                "Documents uploaded": (
+                    "<br>".join(f"{u.filename} ({u.size_bytes // 1024} KB)" for u in uploads)
+                    if uploads
+                    else "None"
+                ),
                 "Authorized representative": form_data.get("authorized_rep"),
                 "Title": form_data.get("rep_title"),
                 "Signature (typed)": form_data.get("signature"),
@@ -723,6 +808,9 @@ def apply_for_funding():
                 signature=form_data.get("signature"),
                 certified=bool(form_data.get("certify")),
             )
+            for upload in uploads:
+                record.files.append(upload)
+
             try:
                 db.session.add(record)
                 db.session.commit()
@@ -742,6 +830,10 @@ def apply_for_funding():
         bible_willingness=BIBLE_WILLINGNESS,
         assistance_types=ASSISTANCE_TYPES,
         attachments=ATTACHMENTS,
+        upload_extensions=sorted(ALLOWED_UPLOADS),
+        max_files=MAX_FILES,
+        max_file_mb=MAX_FILE_BYTES // (1024 * 1024),
+        max_total_mb=MAX_TOTAL_BYTES // (1024 * 1024),
         budget_rows=range(BUDGET_ROWS),
         certification_text=CERTIFICATION_TEXT,
         form_data=form_data,
@@ -855,6 +947,26 @@ def portal_update_status(app_id):
     return redirect(url_for("portal_application", app_id=app_id))
 
 
+@app.route("/portal/file/<int:file_id>")
+@login_required
+def portal_download(file_id):
+    record = db.session.get(ApplicationFile, file_id)
+    if record is None:
+        abort(404)
+
+    # Always force a download. Serving inline would let a crafted file run in
+    # the reviewer's browser on this site's origin.
+    response = app.response_class(record.data, mimetype="application/octet-stream")
+    response.headers["Content-Disposition"] = (
+        f'attachment; filename="{secure_filename(record.filename)}"'
+    )
+    response.headers["Content-Length"] = str(record.size_bytes)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -897,6 +1009,16 @@ def create_user():
 @app.errorhandler(404)
 def not_found(_e):
     return render_template("404.html"), 404
+
+
+@app.errorhandler(413)
+def too_large(_e):
+    flash(
+        f"Those attachments are too large. Please keep the total under "
+        f"{MAX_TOTAL_BYTES // (1024 * 1024)} MB.",
+        "error",
+    )
+    return redirect(url_for("apply_for_funding")), 302
 
 
 with app.app_context():

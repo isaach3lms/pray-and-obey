@@ -68,6 +68,25 @@
     recalc();
   }
 
+  /* Show which documents the applicant selected */
+  var fileInput = document.getElementById("documents");
+  var fileState = document.getElementById("upload-state");
+
+  if (fileInput && fileState) {
+    fileInput.addEventListener("change", function () {
+      var files = Array.prototype.slice.call(fileInput.files || []);
+      if (!files.length) {
+        fileState.textContent = "No files selected";
+        fileState.classList.remove("has-files");
+        return;
+      }
+      var names = files.map(function (f) { return f.name; });
+      fileState.textContent =
+        files.length + (files.length === 1 ? " file: " : " files: ") + names.join(", ");
+      fileState.classList.add("has-files");
+    });
+  }
+
   /* Scroll reveal, disabled when the visitor prefers reduced motion */
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var items = document.querySelectorAll(".reveal");

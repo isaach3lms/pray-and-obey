@@ -162,11 +162,32 @@ Gold measures 2.13:1 against cream, which fails WCAG for text. It is used struct
 
 Twenty-six fields are required. Submission is blocked with a single message listing every missing field by name.
 
-### Attachments
+### Supporting documents
 
-The form does not accept file uploads. There is no object storage attached to this deployment, and routing financial documents through email attachments creates a retention problem. Applicants confirm which documents they have ready; the fund requests them by email once an application is under review.
+Applicants can attach documents, and reviewers download them from the portal.
 
-To change this, you would need S3 or Render disk storage plus a virus-scanning step. Not recommended before there is volume that justifies it.
+| Limit | Value |
+|---|---|
+| Files per application | 6 |
+| Size per file | 10 MB |
+| Total per application | 25 MB |
+| Accepted types | .pdf, .doc, .docx, .xls, .xlsx, .png, .jpg, .jpeg |
+
+Change these in `models.py` (`MAX_FILES`, `MAX_FILE_BYTES`, `MAX_TOTAL_BYTES`, `ALLOWED_UPLOADS`).
+
+**Where files live.** In the database, in `application_files`. Render's web filesystem is ephemeral, so anything written to disk disappears on the next deploy. At this fund's volume the database is the right home. If volume grows, move the `data` column to object storage and keep the rest of the table as the index.
+
+**Storage math.** 25 MB per application is the ceiling, and most will be far under. 200 applications at an average of 8 MB is roughly 1.6 GB. Watch the Postgres plan's storage limit as volume builds.
+
+**Security measures in place:**
+
+- Extension and content type must both be on the allow list. Checking only one lets a renamed executable through.
+- Filenames pass through `secure_filename`, so path traversal is neutralized.
+- `MAX_CONTENT_LENGTH` rejects oversized requests at the Flask layer before application code runs, with a 413 handler that returns a readable message.
+- Downloads require sign-in and always send `Content-Disposition: attachment` with `X-Content-Type-Options: nosniff` and a restrictive CSP, so nothing can execute in a reviewer's browser on this origin.
+- File size is measured from the bytes read, never from a client-supplied header.
+
+**What is not in place:** virus scanning. The fund receives documents from organizations it is choosing whether to fund, and reviewers download them to their own machines. If that becomes a concern, the standard addition is a scanning step (ClamAV or a hosted API) between validation and commit.
 
 ### Electronic signature
 
@@ -267,4 +288,5 @@ Resend also requires DKIM and SPF records on the sending domain. Add those from 
 - [ ] Postgres instance provisioned on Render
 - [ ] At least two portal accounts created, one per team member
 - [ ] Portal login tested over HTTPS on the live domain
-- [ ] Data retention decision made for stored applications
+- [ ] Data retention decision made for stored applications and their attachments
+- [ ] Postgres storage headroom confirmed against expected application volume

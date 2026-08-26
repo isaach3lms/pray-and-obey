@@ -155,6 +155,71 @@ class Application(db.Model):
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Uploaded documents
+# ---------------------------------------------------------------------------
+
+# Files are stored in the database rather than on disk. Render's web filesystem
+# is ephemeral, so anything written there disappears on the next deploy. At this
+# fund's volume the database is the correct home; if volume grows, move the
+# `data` column to object storage and keep the rest of this table as the index.
+
+MAX_FILE_BYTES = 10 * 1024 * 1024        # 10 MB per file
+MAX_TOTAL_BYTES = 25 * 1024 * 1024       # 25 MB per application
+MAX_FILES = 6
+
+# Extension and content type must BOTH be allowed. Checking only one is how
+# an executable or an SVG carrying script gets through.
+ALLOWED_UPLOADS = {
+    ".pdf": {"application/pdf"},
+    ".doc": {"application/msword"},
+    ".docx": {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    ".xls": {"application/vnd.ms-excel"},
+    ".xlsx": {
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    },
+    ".png": {"image/png"},
+    ".jpg": {"image/jpeg"},
+    ".jpeg": {"image/jpeg"},
+}
+
+
+class ApplicationFile(db.Model):
+    __tablename__ = "application_files"
+
+    id = db.Column(db.Integer, primary_key=True)
+    application_id = db.Column(
+        db.Integer,
+        db.ForeignKey("applications.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    filename = db.Column(db.String(255), nullable=False)
+    content_type = db.Column(db.String(120), nullable=False)
+    size_bytes = db.Column(db.Integer, nullable=False)
+    data = db.Column(db.LargeBinary, nullable=False)
+    uploaded_at = db.Column(UTCDateTime, default=utcnow, nullable=False)
+
+    application = db.relationship(
+        "Application",
+        backref=db.backref(
+            "files", cascade="all, delete-orphan", order_by="ApplicationFile.id"
+        ),
+    )
+
+    @property
+    def size_label(self) -> str:
+        kb = self.size_bytes / 1024
+        if kb < 1024:
+            return f"{kb:.0f} KB"
+        return f"{kb / 1024:.1f} MB"
+
+    def __repr__(self):
+        return f"<ApplicationFile {self.id} {self.filename}>"
+
+
 def database_uri() -> str:
     """Postgres in production, SQLite locally.
 

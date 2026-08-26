@@ -53,7 +53,10 @@
               {% if a.email %}<span class="table__sub">{{ a.email }}</span>{% endif %}
             </td>
             <td>{{ a.amount_requested or '-' }}</td>
-            <td>{{ a.submitted_at.strftime('%b %d, %Y') }}</td>
+            <td>
+              {{ a.submitted_at.strftime('%b %d, %Y') }}
+              {% if a.files %}<span class="table__sub">{{ a.files | length }} document{{ '' if a.files | length == 1 else 's' }}</span>{% endif %}
+            </td>
             <td><span class="pill pill--{{ a.tone }}">{{ a.status }}</span></td>
           </tr>
           {% endfor %}
