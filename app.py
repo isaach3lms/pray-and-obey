@@ -75,8 +75,12 @@ def load_user(user_id):
     return db.session.get(User, int(user_id))
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
-MAIL_FROM = os.environ.get("MAIL_FROM", "Pray and Obey <apply@prayandobey.org>")
-MAIL_TO = os.environ.get("MAIL_TO", "info@prayandobey.org")
+# The sending domain must be verified in Resend or every send returns 403.
+# Verified on this account: prayandobeyministries.org, betweensundaysconsulting.com
+MAIL_FROM = os.environ.get(
+    "MAIL_FROM", "Pray and Obey Ministries <apply@prayandobeyministries.org>"
+)
+MAIL_TO = os.environ.get("MAIL_TO", "isaac@betweensundaysconsulting.com")
 
 # Minimum seconds a human needs to fill the application form.
 FORM_MIN_SECONDS = int(os.environ.get("FORM_MIN_SECONDS", "8"))
@@ -96,8 +100,8 @@ SITE = {
         "Pray and Obey Ministries is a private fund providing grants to organizations "
         "committed to compassionate action for vulnerable individuals and communities."
     ),
-    "domain": "https://prayandobey.org",
-    "email": "info@prayandobey.org",
+    "domain": "https://prayandobeyministries.org",
+    "email": "info@prayandobeyministries.org",
     # Not currently rendered. The footer Connect column was removed.
     # Re-adding the column in base.html will pick these up again.
     "socials": [
@@ -610,6 +614,15 @@ def send_application_email(payload: dict) -> bool:
         f"{rows}</table></div>"
     )
 
+    text = "\n".join(
+        (f"\n{k.strip('- ').upper()}" if k.startswith("--") else f"{k}: {v or '-'}")
+        for k, v in payload.items()
+    )
+
+    org = payload.get("Legal organization name") or "Unknown organization"
+    amount = payload.get("Amount requested")
+    subject = f"Grant application: {org}" + (f" ({amount})" if amount else "")
+
     try:
         r = requests.post(
             "https://api.resend.com/emails",
@@ -619,16 +632,20 @@ def send_application_email(payload: dict) -> bool:
             },
             json={
                 "from": MAIL_FROM,
-                "to": [MAIL_TO],
+                "to": [a.strip() for a in MAIL_TO.split(",") if a.strip()],
                 "reply_to": payload.get("Email", MAIL_TO),
-                "subject": f"Grant application: {payload.get('Legal organization name', 'Unknown')}",
+                "subject": subject,
                 "html": html,
+                "text": text,
             },
             timeout=15,
         )
         if r.status_code >= 400:
+            # The application is already saved, so a failed send never costs
+            # the applicant their submission. Log loudly for the operator.
             app.logger.error("Resend error %s: %s", r.status_code, r.text)
             return False
+        app.logger.info("Notification sent to %s for %s", MAIL_TO, org)
         return True
     except requests.RequestException as exc:
         app.logger.error("Resend request failed: %s", exc)
