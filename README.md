@@ -123,7 +123,13 @@ Each source file's flat background was removed using distance-based alpha so ant
 
 `logo-badge.png` is the circular seal, used only inside the Our Impact word cloud.
 
-It uses a deliberately narrow alpha feather (clear below 5 units from white, solid above 15) rather than the wider band used on the wordmark files. The seal's interior is cream at roughly 29 units from white, so a wide band would render the whole inside of the badge semi-transparent. No circular mask is applied, because masking clipped the navy outer ring.
+Two things about how it was produced:
+
+**Aspect correction.** The client's badge screenshot was horizontally squashed by about 3.9 percent, so the navy ring measured 283px wide against 294px tall and read as clipped on the left and right. The width is stretched by that factor before processing, which restores a true circle to within 1px. The shipped file measures 430 x 428.
+
+**Narrow alpha feather.** Clear below 5 units from white, solid above 15, rather than the wider band used on the wordmark files. The seal's interior is cream at roughly 29 units from white, so a wide band would render the whole inside of the badge semi-transparent.
+
+The circle is located from the navy ring itself and everything outside it is masked away, which removes stray artifacts elsewhere in the source screenshot.
 
 ---
 
