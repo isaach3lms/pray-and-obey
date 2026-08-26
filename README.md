@@ -293,6 +293,29 @@ Both are logged at INFO level so you can see the volume in Render logs.
 
 ---
 
+## If accounts or applications disappear after a deploy
+
+Almost always one cause: **the app was running on SQLite instead of Postgres.** Render's web filesystem is ephemeral, so a SQLite file is wiped on every deploy, taking portal accounts and submitted applications with it.
+
+The app now refuses to start in production when `DATABASE_URL` or `SECRET_KEY` is missing, so this cannot recur silently. A crashed deploy with a clear message is far better than quietly losing the client's data.
+
+To check a running service, open the Render Shell and run:
+
+```bash
+flask doctor
+```
+
+It reports the database driver and host, which environment variables are set, and how many users, applications, and files exist. A driver reading `sqlite` on Render is the problem.
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Accounts and applications both gone | SQLite on ephemeral disk | Attach Postgres, set `DATABASE_URL` |
+| Accounts exist but everyone is signed out | `SECRET_KEY` missing or changed | Set a fixed `SECRET_KEY` in Render |
+
+`SECRET_KEY` must stay **the same** across deploys. Changing it invalidates every session cookie and signs everyone out.
+
+---
+
 ## Deploying to Render
 
 1. Push to GitHub `main`.

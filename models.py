@@ -258,13 +258,33 @@ class ApplicationFile(db.Model):
         return f"<ApplicationFile {self.id} {self.filename}>"
 
 
+def is_production() -> bool:
+    """Render sets RENDER=true on every service it runs."""
+    return os.environ.get("RENDER", "").lower() == "true"
+
+
 def database_uri() -> str:
     """Postgres in production, SQLite locally.
 
     Render supplies DATABASE_URL beginning with postgres://, which
     SQLAlchemy 2.x no longer accepts. Rewrite the scheme.
+
+    In production a missing DATABASE_URL is fatal. Falling back to SQLite
+    there writes to an ephemeral filesystem, so every deploy silently wipes
+    user accounts and submitted applications. Crashing on boot is far better
+    than losing the client's data one deploy at a time.
     """
     url = os.environ.get("DATABASE_URL", "")
+
+    if not url:
+        if is_production():
+            raise RuntimeError(
+                "DATABASE_URL is not set. Refusing to start on ephemeral SQLite, "
+                "which would discard every account and application on the next "
+                "deploy. Attach a Postgres instance in Render and set DATABASE_URL."
+            )
+        return "sqlite:///pray_and_obey.db"
+
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
-    return url or "sqlite:///pray_and_obey.db"
+    return url

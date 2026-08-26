@@ -37,6 +37,7 @@ from pdf_export import build_application_pdf
 
 from models import (
     ALLOWED_UPLOADS,
+    is_production,
     hash_token,
     MAX_FILES,
     MAX_FILE_BYTES,
@@ -55,6 +56,27 @@ from models import (
 # ---------------------------------------------------------------------------
 
 app = Flask(__name__)
+# Both settings are checked together so a broken deploy reports every problem
+# at once instead of one per attempt.
+if is_production():
+    _problems = []
+    if not os.environ.get("DATABASE_URL"):
+        _problems.append(
+            "DATABASE_URL is not set. The app would fall back to SQLite on an "
+            "ephemeral filesystem, discarding every account and application on "
+            "the next deploy. Attach a Postgres instance in Render."
+        )
+    if not os.environ.get("SECRET_KEY"):
+        _problems.append(
+            "SECRET_KEY is not set. Session cookies would be signed with a "
+            "default value, so everyone is signed out whenever it changes and "
+            "sessions could be forged."
+        )
+    if _problems:
+        raise RuntimeError(
+            "Refusing to start.\n  - " + "\n  - ".join(_problems)
+        )
+
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-change-me")
 app.config["SQLALCHEMY_DATABASE_URI"] = database_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -1293,6 +1315,44 @@ def create_user(name, email):
     print(f"Created portal user {email}. Sign in at /portal/login")
 
 
+@app.cli.command("doctor")
+def doctor():
+    """Report whether this deployment is configured to keep its data."""
+    print("\n=== Pray and Obey deployment check ===\n")
+
+    on_render = os.environ.get("RENDER", "").lower() == "true"
+    print(f"Environment            : {'Render (production)' if on_render else 'local'}")
+
+    url = db.engine.url
+    persistent = url.drivername.startswith("postgresql")
+    print(f"Database driver        : {url.drivername}")
+    print(f"Database host          : {url.host or '(local file)'}")
+    if on_render and not persistent:
+        print("  !! SQLite on Render is ephemeral. Data is lost on every deploy.")
+    elif persistent:
+        print("  OK. Data persists across deploys.")
+
+    secret = os.environ.get("SECRET_KEY", "")
+    if not secret:
+        print("SECRET_KEY             : NOT SET  !! everyone is signed out each deploy")
+    else:
+        print(f"SECRET_KEY             : set ({len(secret)} chars)")
+
+    for key in ("RESEND_API_KEY", "MAIL_FROM", "MAIL_TO",
+                "RECAPTCHA_SITE_KEY", "RECAPTCHA_SECRET_KEY",
+                "PUBLIC_BASE_URL", "GA_MEASUREMENT_ID"):
+        value = os.environ.get(key, "")
+        if key.endswith("KEY") and value:
+            value = value[:8] + "..."
+        print(f"{key:<23}: {value or '(not set)'}")
+
+    print("")
+    print(f"Portal users           : {db.session.query(User).count()}")
+    print(f"Applications           : {db.session.query(Application).count()}")
+    print(f"Uploaded files         : {db.session.query(ApplicationFile).count()}")
+    print("")
+
+
 @app.cli.command("invite-user")
 @click.option("--name", help="Full name, e.g. \"Isaac Helms\"")
 @click.option("--email", help="Sign-in email address")
@@ -1421,6 +1481,14 @@ def too_large(_e):
 
 with app.app_context():
     db.create_all()
+    # Say plainly which database is in use. A line reading "sqlite" in the
+    # Render logs is the signal that data will not survive the next deploy.
+    _engine = db.engine.url
+    app.logger.info(
+        "Database: %s%s",
+        _engine.drivername,
+        f" on {_engine.host}" if _engine.host else " (local file)",
+    )
 
 
 if __name__ == "__main__":
