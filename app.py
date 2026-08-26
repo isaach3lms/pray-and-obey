@@ -12,6 +12,7 @@ import json
 import logging
 from datetime import datetime, timezone
 
+import click
 import requests
 from flask import (
     Flask,
@@ -997,30 +998,91 @@ def init_db():
 
 
 @app.cli.command("create-user")
-def create_user():
-    """Create a portal user. Prompts for name, email, and password."""
+@click.option("--name", help="Full name, e.g. \"Isaac Helms\"")
+@click.option("--email", help="Sign-in email address")
+def create_user(name, email):
+    """Create a portal user.
+
+    Password is always prompted, never passed as an argument, so it does not
+    land in shell history.
+    """
     import getpass
 
-    name = input("Name: ").strip()
-    email = input("Email: ").strip().lower()
-    password = getpass.getpass("Password: ")
-    confirm = getpass.getpass("Confirm password: ")
+    name = (name or input("Name: ")).strip()
+    email = (email or input("Email: ")).strip().lower()
 
-    if password != confirm:
-        print("Passwords do not match.")
+    if not name or "@" not in email:
+        print("A name and a valid email address are required.")
         return
+    if db.session.query(User).filter(User.email == email).first():
+        print(f"A user with {email} already exists. Use reset-password instead.")
+        return
+
+    password = getpass.getpass("Password (min 12 characters): ")
     if len(password) < 12:
         print("Use at least 12 characters.")
         return
-    if db.session.query(User).filter(User.email == email).first():
-        print("A user with that email already exists.")
+    if password != getpass.getpass("Confirm password: "):
+        print("Passwords do not match.")
         return
 
     user = User(name=name, email=email)
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
-    print(f"Created portal user {email}.")
+    print(f"Created portal user {email}. Sign in at /portal/login")
+
+
+@app.cli.command("list-users")
+def list_users():
+    """List portal users."""
+    users = db.session.query(User).order_by(User.created_at).all()
+    if not users:
+        print("No portal users yet. Run: flask create-user")
+        return
+    for u in users:
+        state = "active" if u.is_active_user else "DISABLED"
+        last = u.last_login_at.strftime("%Y-%m-%d") if u.last_login_at else "never"
+        print(f"{u.email:<45} {u.name:<24} {state:<9} last login: {last}")
+
+
+@app.cli.command("reset-password")
+@click.option("--email", help="Sign-in email address")
+def reset_password(email):
+    """Set a new password for an existing portal user."""
+    import getpass
+
+    email = (email or input("Email: ")).strip().lower()
+    user = db.session.query(User).filter(User.email == email).first()
+    if user is None:
+        print(f"No portal user with {email}.")
+        return
+
+    password = getpass.getpass("New password (min 12 characters): ")
+    if len(password) < 12:
+        print("Use at least 12 characters.")
+        return
+    if password != getpass.getpass("Confirm password: "):
+        print("Passwords do not match.")
+        return
+
+    user.set_password(password)
+    db.session.commit()
+    print(f"Password updated for {email}.")
+
+
+@app.cli.command("disable-user")
+@click.option("--email", help="Sign-in email address")
+def disable_user(email):
+    """Block a portal user from signing in without deleting their record."""
+    email = (email or input("Email: ")).strip().lower()
+    user = db.session.query(User).filter(User.email == email).first()
+    if user is None:
+        print(f"No portal user with {email}.")
+        return
+    user.is_active_user = False
+    db.session.commit()
+    print(f"Disabled {email}. Their sessions will stop working.")
 
 
 @app.errorhandler(404)
