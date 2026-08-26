@@ -39,6 +39,7 @@
             <th>Requested</th>
             <th>Submitted</th>
             <th>Status</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -58,6 +59,10 @@
               {% if a.files %}<span class="table__sub">{{ a.files | length }} document{{ '' if a.files | length == 1 else 's' }}</span>{% endif %}
             </td>
             <td><span class="pill pill--{{ a.tone }}">{{ a.status }}</span></td>
+            <td class="table__actions">
+              <a href="{{ url_for('portal_application_pdf', app_id=a.id) }}"
+                 onclick="event.stopPropagation()" title="Download as PDF">PDF</a>
+            </td>
           </tr>
           {% endfor %}
         </tbody>

@@ -69,6 +69,11 @@
         </form>
 
         <div class="status-card status-card--quiet">
+          <span class="detail__label">Export</span>
+          <a class="btn btn--navy btn--block" href="{{ url_for('portal_application_pdf', app_id=a.id) }}">Download PDF</a>
+        </div>
+
+        <div class="status-card status-card--quiet">
           <span class="detail__label">Quick facts</span>
           <ul class="factlist">
             <li><span>Requested</span><strong>{{ a.amount_requested or '-' }}</strong></li>
@@ -79,6 +84,15 @@
             <li><span>Documents</span><strong>{{ a.files | length }}</strong></li>
           </ul>
         </div>
+        <details class="danger">
+          <summary>Delete this application</summary>
+          <p>This permanently removes the application{% if a.files %} and its {{ a.files | length }} attached document{{ '' if a.files | length == 1 else 's' }}{% endif %}. It cannot be undone.</p>
+          <form method="post" action="{{ url_for('portal_delete_application', app_id=a.id) }}">
+            <label for="confirm">Type DELETE to confirm</label>
+            <input type="text" id="confirm" name="confirm" autocomplete="off" placeholder="DELETE">
+            <button type="submit" class="btn btn--danger btn--block">Delete permanently</button>
+          </form>
+        </details>
       </aside>
 
       <!-- Application body -->

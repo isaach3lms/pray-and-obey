@@ -190,6 +190,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn--light:hover { background: var(--tint); color: var(--navy); }
 
 .btn--block { width: 100%; }
+
+.btn--danger { background: var(--flame); color: var(--white); }
+.btn--danger:hover { background: var(--flame-700); color: var(--white); }
 .btn--lg { padding: 16px 32px; font-size: 0.88rem; }
 
 .textlink {
@@ -1651,4 +1654,80 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 
 @media (max-width: 520px) {
   .colophon__inner { justify-content: center; text-align: center; }
+}
+
+
+/* ==========================================================================
+   Portal: PDF action and delete panel
+   ========================================================================== */
+
+.table__actions { text-align: right; white-space: nowrap; }
+.table__actions a {
+  display: inline-block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--navy);
+  background: var(--white);
+}
+.table__actions a:hover { border-color: var(--navy); background: var(--tint); }
+
+/* Deletion is permanent, so it is folded away rather than sitting next to
+   the everyday controls. */
+.danger {
+  border: 1px solid #EFC3CB;
+  border-radius: var(--radius);
+  background: #FDF6F7;
+  padding: 4px 18px;
+}
+.danger[open] { padding-bottom: 20px; }
+
+.danger summary {
+  cursor: pointer;
+  padding: 14px 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--flame-700);
+  list-style: none;
+}
+.danger summary::-webkit-details-marker { display: none; }
+.danger summary::before { content: "\26A0  "; }
+
+.danger p {
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  margin: 0 0 14px;
+}
+
+.danger label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--flame-700);
+  margin-bottom: 6px;
+}
+
+.danger input {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  letter-spacing: .08em;
+  background: var(--white);
+  border: 1px solid #EFC3CB;
+  border-radius: 9px;
+  padding: 10px 13px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.danger input:focus {
+  border-color: var(--flame);
+  outline: 2px solid rgba(200, 16, 46, .16);
 }

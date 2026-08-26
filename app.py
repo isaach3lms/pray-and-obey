@@ -33,6 +33,8 @@ from flask_login import (
 
 from werkzeug.utils import secure_filename
 
+from pdf_export import build_application_pdf
+
 from models import (
     ALLOWED_UPLOADS,
     hash_token,
@@ -1175,6 +1177,52 @@ def portal_update_status(app_id):
 
     db.session.commit()
     return redirect(url_for("portal_application", app_id=app_id))
+
+
+@app.route("/portal/application/<int:app_id>/pdf")
+@login_required
+def portal_application_pdf(app_id):
+    record = db.session.get(Application, app_id)
+    if record is None:
+        abort(404)
+
+    pdf = build_application_pdf(record)
+    safe_org = secure_filename(record.legal_name or "application")[:60] or "application"
+    filename = f"Application-{record.id:04d}-{safe_org}.pdf"
+
+    response = app.response_class(pdf.read(), mimetype="application/pdf")
+    response.headers["Content-Disposition"] = f'attachment; filename="{filename}"'
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.route("/portal/application/<int:app_id>/delete", methods=["POST"])
+@login_required
+def portal_delete_application(app_id):
+    record = db.session.get(Application, app_id)
+    if record is None:
+        abort(404)
+
+    # A typed confirmation, so a stray click or a double submit cannot destroy
+    # a record. POST only, so no link or prefetch can ever trigger it.
+    if (request.form.get("confirm") or "").strip().upper() != "DELETE":
+        flash('Type DELETE in the confirmation box to remove this application.', "error")
+        return redirect(url_for("portal_application", app_id=app_id))
+
+    org = record.legal_name
+    file_count = len(record.files)
+
+    # Deletion is permanent, so leave a trail in the logs of who did what.
+    app.logger.warning(
+        "Application %s (%s) and %s file(s) deleted by %s",
+        record.id, org, file_count, current_user.email,
+    )
+
+    db.session.delete(record)          # files cascade with the record
+    db.session.commit()
+
+    flash(f"Deleted the application from {org}.", "success")
+    return redirect(url_for("portal"))
 
 
 @app.route("/portal/file/<int:file_id>")
