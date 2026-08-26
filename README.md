@@ -72,7 +72,7 @@ All copy lives in `app.py` as Python dictionaries and lists. Templates read from
 | `SITE` | Name, tagline, meta description, email, social links |
 | `NAV` | Header and mobile menu links |
 | `HERO` | Headline, body, buttons, floating cards |
-| `IMPACT` | Our Impact: four key themes, word cloud, question and answer pairs, impact statement, Micah 6:8 quotation, guided-by line |
+| `IMPACT` | Our Impact: four key themes, word cloud, impact statement, Micah 6:8 quotation, guided-by line |
 | `MISSION` | Mission section copy, two pillars |
 | `FOCUS` | The seven funding focus areas |
 | `PROCESS` | The four application steps |

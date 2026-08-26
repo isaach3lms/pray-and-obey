@@ -1384,6 +1384,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 /* Word cloud. Rendered as text, not an image, so it stays sharp at any size
    and reflows on narrow screens. */
 .themes__aside {
+  align-self: center;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1394,9 +1395,7 @@ main > .section:last-child { padding-bottom: var(--section-y); }
   position: relative;
   container-type: inline-size;
   aspect-ratio: 874 / 550;
-  margin: 0 0 26px;
-  padding: 0 0 20px;
-  border-bottom: 1px solid var(--line);
+  margin: 0;
 }
 
 /* The seal anchors the top right, matching the client's arrangement. */
@@ -1432,22 +1431,6 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 
 .cloud__word--navy { color: var(--navy); }
 .cloud__word--muted { color: #9AA2B0; }
-
-/* Question and answer pairs */
-.qa { margin: 0; text-align: right; }
-.qa dt {
-  font-size: var(--fs-small);
-  font-style: italic;
-  color: var(--ink-muted);
-}
-.qa dd {
-  margin: 0 0 12px;
-  font-size: var(--fs-small);
-  font-weight: 700;
-  font-style: italic;
-  color: var(--navy);
-}
-.qa dd:last-child { margin-bottom: 0; }
 
 /* Impact statement panel */
 .statement {
@@ -1523,14 +1506,12 @@ main > .section:last-child { padding-bottom: var(--section-y); }
 
 @media (max-width: 900px) {
   .themes { grid-template-columns: 1fr; }
-  .qa { text-align: left; }
 }
 
 @media (max-width: 560px) {
   .cloud {
     aspect-ratio: auto;
     container-type: normal;
-    padding-bottom: 24px;
   }
   .cloud__badge {
     position: static;

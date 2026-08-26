@@ -192,16 +192,6 @@ IMPACT = {
     ],
     "badge": "img/logo-badge.png",
     "badge_alt": "Pray and Obey Ministries seal",
-    "qa": [
-        {
-            "question": "What would you like more of in the world?",
-            "answer": "More Jesus and loving fathers.",
-        },
-        {
-            "question": "What would you like less of in the world?",
-            "answer": "Hatred and discord.",
-        },
-    ],
     "statement_label": "Impact statement",
     "statement": (
         "Our mission is to glorify Jesus Christ by supporting ministries that bring His love and "
