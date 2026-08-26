@@ -992,10 +992,9 @@ main > .section:last-child { padding-bottom: var(--section-y); }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
 }
-.form-foot p { font-size: 0.8rem; color: var(--ink-soft); max-width: 44ch; }
 
 .flash-wrap { max-width: 860px; margin: 22px auto 0; padding: 0 var(--gutter); }
 .flash {
