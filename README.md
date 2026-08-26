@@ -117,11 +117,13 @@ The Criteria section no longer uses a photo. It renders as a two-column text lay
 | `logo-nav.png` | Header, on white | Plain lockup with Matthew 3:11. 640px export, displayed at 186px. |
 | `logo-mark.png` | Favicon, thank-you page, 404, portal sign in | Flame and book mark only. Sized by height. |
 | `logo-full.png` | Open Graph share image | Plain lockup at 1200px |
-| `logo-badge.png` | Word cloud, Our Impact | Circular seal, masked to a clean circle at 420px |
+| `logo-badge.png` | Word cloud, Our Impact | Circular seal at 440px, squared so CSS never distorts it |
 
 Each source file's flat background was removed using distance-based alpha so anti-aliased edges feather rather than stair-step.
 
-`logo-badge.png` is the circular seal, extracted from a client screenshot and masked to a circle slightly inside the navy ring so the source image's soft outer edge does not show as a grey halo. It is used only inside the Our Impact word cloud.
+`logo-badge.png` is the circular seal, used only inside the Our Impact word cloud.
+
+It uses a deliberately narrow alpha feather (clear below 5 units from white, solid above 15) rather than the wider band used on the wordmark files. The seal's interior is cream at roughly 29 units from white, so a wide band would render the whole inside of the badge semi-transparent. No circular mask is applied, because masking clipped the navy outer ring.
 
 ---
 
