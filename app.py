@@ -102,6 +102,11 @@ RECAPTCHA_SITE_KEY = os.environ.get("RECAPTCHA_SITE_KEY", "")
 RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY", "")
 RECAPTCHA_MIN_SCORE = float(os.environ.get("RECAPTCHA_MIN_SCORE", "0.5"))
 
+# Google Analytics 4. The measurement ID is public by design. Set it to an
+# empty string to switch analytics off entirely, which is what local
+# development wants so test traffic never reaches the client's reports.
+GA_MEASUREMENT_ID = os.environ.get("GA_MEASUREMENT_ID", "G-ES8P9RL3L8")
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -817,6 +822,11 @@ def inject_globals():
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
         "recaptcha_site_key": RECAPTCHA_SITE_KEY,
+        # Staff activity in the review portal is not public site traffic, so
+        # it is excluded rather than polluting the client's reports.
+        "ga_measurement_id": (
+            "" if request.path.startswith("/portal") else GA_MEASUREMENT_ID
+        ),
     }
 
 

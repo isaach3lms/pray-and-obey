@@ -2,6 +2,18 @@
 {% block title %}Application received | {{ site.name }}{% endblock %}
 
 {% block content %}
+{% if ga_measurement_id %}
+<script>
+  /* A completed application is the conversion worth measuring. This page is
+     only reachable after a successful submission. */
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('event', 'generate_lead', {
+    event_category: 'application',
+    event_label: 'grant_application_submitted'
+  });
+</script>
+{% endif %}
 <section class="centered">
   <div class="centered__inner">
     <img class="centered__mark" src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="">

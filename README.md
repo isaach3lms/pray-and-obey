@@ -231,6 +231,26 @@ Crossway's Standard Use Guidelines permit quoting the ESV in digital formats up 
 
 ---
 
+## Analytics
+
+Google Analytics 4 via the standard gtag snippet in `<head>`, controlled by `GA_MEASUREMENT_ID`.
+
+| Where | Tracked |
+|---|---|
+| Public pages | Yes |
+| `/apply`, `/thank-you` | Yes |
+| `/portal/*` | **No** |
+
+**The portal is deliberately excluded.** Staff reviewing applications are not site visitors, and counting them would inflate the client's traffic and distort engagement metrics. The exclusion is done server-side in the context processor, so the tag is never rendered on those pages rather than merely filtered later.
+
+**Conversion event.** `/thank-you` fires a `generate_lead` event. That page is only reachable after a successful submission, so it is an accurate count of completed applications. Verified in a real browser: two collect calls fire on that page, `page_view` then `generate_lead`.
+
+Mark `generate_lead` as a key event in the GA4 admin (Admin, then Events) for it to appear in conversion reports.
+
+**Set `GA_MEASUREMENT_ID` to an empty string locally** so development and test traffic never reaches the client's reports.
+
+---
+
 ## Spam protection
 
 Three independent layers on the application form. The portal login carries reCAPTCHA as well, against credential stuffing.
