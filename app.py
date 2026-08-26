@@ -35,6 +35,7 @@ from werkzeug.utils import secure_filename
 
 from models import (
     ALLOWED_UPLOADS,
+    hash_token,
     MAX_FILES,
     MAX_FILE_BYTES,
     MAX_TOTAL_BYTES,
@@ -85,6 +86,21 @@ MAIL_TO = os.environ.get("MAIL_TO", "isaac@betweensundaysconsulting.com")
 
 # Minimum seconds a human needs to fill the application form.
 FORM_MIN_SECONDS = int(os.environ.get("FORM_MIN_SECONDS", "8"))
+
+# Invite links are built outside a request context by the CLI, so the public
+# address has to be configured rather than inferred.
+PUBLIC_BASE_URL = os.environ.get(
+    "PUBLIC_BASE_URL", "https://prayandobeyministries.org"
+).rstrip("/")
+
+MIN_PASSWORD_LENGTH = 12
+
+# reCAPTCHA v3: invisible and score based. Google returns 0.0 to 1.0, where
+# lower means more bot-like. Verification is skipped entirely when the keys
+# are absent, so local development needs no configuration.
+RECAPTCHA_SITE_KEY = os.environ.get("RECAPTCHA_SITE_KEY", "")
+RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY", "")
+RECAPTCHA_MIN_SCORE = float(os.environ.get("RECAPTCHA_MIN_SCORE", "0.5"))
 
 logging.basicConfig(level=logging.INFO)
 
@@ -515,6 +531,135 @@ REQUIRED_FIELDS = [
 # ---------------------------------------------------------------------------
 
 
+def send_invite_email(user, token: str, purpose: str = "invite") -> bool:
+    """Email a single-use link for setting a portal password."""
+    link = f"{PUBLIC_BASE_URL}/portal/set-password/{token}"
+
+    if purpose == "reset":
+        heading = "Reset your portal password"
+        lead = (
+            f"Hello {user.name}, a password reset was requested for your "
+            f"Pray and Obey Ministries portal account."
+        )
+    else:
+        heading = "Set up your portal account"
+        lead = (
+            f"Hello {user.name}, an account has been created for you on the "
+            f"Pray and Obey Ministries grant review portal."
+        )
+
+    html = f"""
+    <div style="background:#F2F5FA;padding:28px;font-family:Arial,sans-serif;">
+      <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;
+                  border:1px solid #DCE3EE;padding:32px;">
+        <h2 style="color:#0D2D5C;margin:0 0 14px;font-size:20px;">{heading}</h2>
+        <p style="color:#3D4A5C;font-size:14px;line-height:1.6;margin:0 0 22px;">{lead}
+        Choose a password using the button below. The link works once and
+        expires in 72 hours.</p>
+        <p style="margin:0 0 24px;">
+          <a href="{link}" style="background:#C8102E;color:#fff;text-decoration:none;
+             border-radius:999px;padding:13px 28px;font-size:13px;font-weight:bold;
+             letter-spacing:.05em;display:inline-block;">CHOOSE YOUR PASSWORD</a>
+        </p>
+        <p style="color:#6B7684;font-size:12px;line-height:1.6;margin:0 0 8px;">
+          If the button does not work, paste this into your browser:</p>
+        <p style="color:#0D2D5C;font-size:12px;word-break:break-all;margin:0 0 20px;">{link}</p>
+        <p style="color:#6B7684;font-size:12px;line-height:1.6;margin:0;">
+          If you were not expecting this, you can ignore it and nothing will change.</p>
+      </div>
+    </div>
+    """
+
+    text = (
+        f"{heading}\n\n{lead}\n\n"
+        f"Open this link to choose a password. It works once and expires in 72 hours:\n{link}\n\n"
+        f"If you were not expecting this, ignore it and nothing will change.\n"
+    )
+
+    if not RESEND_API_KEY:
+        app.logger.warning("RESEND_API_KEY not set. Invite link: %s", link)
+        return False
+
+    try:
+        r = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": MAIL_FROM,
+                "to": [user.email],
+                "subject": f"{heading} | Pray and Obey Ministries",
+                "html": html,
+                "text": text,
+            },
+            timeout=15,
+        )
+        if r.status_code >= 400:
+            app.logger.error("Resend error %s: %s", r.status_code, r.text)
+            return False
+        return True
+    except requests.RequestException as exc:
+        app.logger.error("Resend request failed: %s", exc)
+        return False
+
+
+def verify_recaptcha(expected_action: str) -> tuple[bool, str]:
+    """Check the reCAPTCHA v3 token on the current request.
+
+    Returns (ok, reason). Deliberately fails OPEN when Google is unreachable:
+    losing a real grant application to a network blip is worse than letting
+    through the rare bot, and the honeypot and timing checks still apply.
+    Fails CLOSED on a low score or a mismatched action, which are real signals.
+    """
+    if not RECAPTCHA_SECRET_KEY:
+        return True, "not configured"
+
+    token = (request.form.get("g-recaptcha-response") or "").strip()
+    if not token:
+        return False, "missing token"
+
+    try:
+        r = requests.post(
+            "https://www.google.com/recaptcha/api/siteverify",
+            data={
+                "secret": RECAPTCHA_SECRET_KEY,
+                "response": token,
+                "remoteip": request.headers.get(
+                    "X-Forwarded-For", request.remote_addr or ""
+                ).split(",")[0].strip(),
+            },
+            timeout=10,
+        )
+        result = r.json()
+    except (requests.RequestException, ValueError) as exc:
+        app.logger.error("reCAPTCHA unreachable, allowing through: %s", exc)
+        return True, "verification unavailable"
+
+    if not result.get("success"):
+        codes = ",".join(result.get("error-codes", []) or ["unknown"])
+        # An expired or already-used token means the person sat on the page
+        # too long. That is a usability problem, not an attack.
+        if "timeout-or-duplicate" in codes:
+            return False, "expired"
+        app.logger.warning("reCAPTCHA failed: %s", codes)
+        return False, codes
+
+    # A token minted for a different form must not be replayed here.
+    action = result.get("action")
+    if action and action != expected_action:
+        app.logger.warning("reCAPTCHA action mismatch: %s", action)
+        return False, "action mismatch"
+
+    score = result.get("score", 0.0)
+    if score < RECAPTCHA_MIN_SCORE:
+        app.logger.info("reCAPTCHA low score %.2f on %s", score, expected_action)
+        return False, "low score"
+
+    return True, f"score {score:.2f}"
+
+
 def collect_uploads(files):
     """Validate uploaded documents.
 
@@ -671,6 +816,7 @@ def inject_globals():
         "nav": NAV,
         "current_year": datetime.now(timezone.utc).year,
         "has_image": has_image,
+        "recaptcha_site_key": RECAPTCHA_SITE_KEY,
     }
 
 
@@ -721,6 +867,7 @@ def apply_for_funding():
         if "@" not in form_data.get("email", ""):
             missing.append("A valid email address")
 
+        captcha_ok, captcha_reason = verify_recaptcha("apply")
         uploads, upload_errors = collect_uploads(request.files.getlist("documents"))
 
         if missing:
@@ -728,7 +875,21 @@ def apply_for_funding():
         for problem in upload_errors:
             flash(problem, "error")
 
-        if not missing and not upload_errors:
+        if not captcha_ok:
+            if captcha_reason == "expired":
+                flash(
+                    "This page was open for a while and the spam check expired. "
+                    "Please submit again, your answers are still here.",
+                    "error",
+                )
+            else:
+                flash(
+                    "We could not verify this submission was from a person. "
+                    "Please try again, or contact us if it keeps happening.",
+                    "error",
+                )
+
+        if not missing and not upload_errors and captcha_ok:
             budget_rows = []
             for i in range(BUDGET_ROWS):
                 desc = form_data.get(f"budget_desc_{i}", "")
@@ -877,9 +1038,13 @@ def portal_login():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
         password = request.form.get("password") or ""
+
+        captcha_ok, _ = verify_recaptcha("login")
         user = db.session.query(User).filter(User.email == email).first()
 
-        if user and user.is_active and user.check_password(password):
+        if not captcha_ok:
+            flash("We could not verify that request. Please try again.", "error")
+        elif user and user.is_active and user.check_password(password):
             login_user(user, remember=False)
             user.last_login_at = utcnow()
             db.session.commit()
@@ -889,11 +1054,48 @@ def portal_login():
                 return redirect(nxt)
             return redirect(url_for("portal"))
 
-        # Same message either way, so the form cannot be used to discover
-        # which email addresses have accounts.
-        flash("That email and password combination was not recognized.", "error")
+        else:
+            # Same message either way, so the form cannot be used to discover
+            # which email addresses have accounts.
+            flash("That email and password combination was not recognized.", "error")
 
     return render_template("portal_login.html")
+
+
+@app.route("/portal/set-password/<token>", methods=["GET", "POST"])
+def portal_set_password(token):
+    """Complete an invite or password reset. The link is single use."""
+    user = (
+        db.session.query(User)
+        .filter(User.invite_token_hash == hash_token(token))
+        .first()
+    )
+
+    if user is None or not user.invite_is_valid():
+        return render_template("portal_set_password.html", expired=True), 400
+
+    if request.method == "POST":
+        password = request.form.get("password") or ""
+        confirm = request.form.get("confirm") or ""
+
+        if len(password) < MIN_PASSWORD_LENGTH:
+            flash(f"Use at least {MIN_PASSWORD_LENGTH} characters.", "error")
+        elif password != confirm:
+            flash("Those passwords do not match.", "error")
+        else:
+            user.set_password(password)
+            user.clear_invite()          # single use, spent on success
+            user.is_active_user = True
+            db.session.commit()
+            flash("Your password is set. Please sign in.", "success")
+            return redirect(url_for("portal_login"))
+
+    return render_template(
+        "portal_set_password.html",
+        expired=False,
+        user=user,
+        min_length=MIN_PASSWORD_LENGTH,
+    )
 
 
 @app.route("/portal/logout")
@@ -1033,6 +1235,60 @@ def create_user(name, email):
     print(f"Created portal user {email}. Sign in at /portal/login")
 
 
+@app.cli.command("invite-user")
+@click.option("--name", help="Full name, e.g. \"Isaac Helms\"")
+@click.option("--email", help="Sign-in email address")
+def invite_user(name, email):
+    """Create a portal account and email a link so they set their own password.
+
+    No password is chosen by the administrator, so nobody but the account
+    holder ever knows it.
+    """
+    name = (name or input("Name: ")).strip()
+    email = (email or input("Email: ")).strip().lower()
+
+    if not name or "@" not in email:
+        print("A name and a valid email address are required.")
+        return
+
+    user = db.session.query(User).filter(User.email == email).first()
+    if user is not None:
+        print(f"{email} already exists. Use send-reset to email them a new link.")
+        return
+
+    user = User(name=name, email=email)
+    token = user.issue_invite()
+    db.session.add(user)
+    db.session.commit()
+
+    if send_invite_email(user, token, purpose="invite"):
+        print(f"Invited {email}. The link expires in 72 hours.")
+    else:
+        print(f"Account created, but the email failed to send. Share this link directly:")
+        print(f"{PUBLIC_BASE_URL}/portal/set-password/{token}")
+
+
+@app.cli.command("send-reset")
+@click.option("--email", help="Sign-in email address")
+def send_reset(email):
+    """Email an existing portal user a link to set a new password."""
+    email = (email or input("Email: ")).strip().lower()
+    user = db.session.query(User).filter(User.email == email).first()
+    if user is None:
+        print(f"No portal user with {email}. Use invite-user to create one.")
+        return
+
+    token = user.issue_invite()
+    db.session.commit()
+
+    purpose = "reset" if user.has_password else "invite"
+    if send_invite_email(user, token, purpose=purpose):
+        print(f"Sent a password link to {email}. It expires in 72 hours.")
+    else:
+        print("The email failed to send. Share this link directly:")
+        print(f"{PUBLIC_BASE_URL}/portal/set-password/{token}")
+
+
 @app.cli.command("list-users")
 def list_users():
     """List portal users."""
@@ -1041,7 +1297,12 @@ def list_users():
         print("No portal users yet. Run: flask create-user")
         return
     for u in users:
-        state = "active" if u.is_active_user else "DISABLED"
+        if not u.is_active_user:
+            state = "DISABLED"
+        elif not u.has_password:
+            state = "invited" if u.invite_is_valid() else "EXPIRED"
+        else:
+            state = "active"
         last = u.last_login_at.strftime("%Y-%m-%d") if u.last_login_at else "never"
         print(f"{u.email:<45} {u.name:<24} {state:<9} last login: {last}")
 

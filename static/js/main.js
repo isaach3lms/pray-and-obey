@@ -68,6 +68,57 @@
     recalc();
   }
 
+  /* reCAPTCHA v3.
+
+     Tokens expire after about two minutes, and the grant application takes
+     roughly thirty to complete. So the token is minted at submit time rather
+     than on page load, and the submission is held until it arrives. */
+  var captchaForms = document.querySelectorAll("form[data-recaptcha]");
+
+  if (captchaForms.length && window.RECAPTCHA_SITE_KEY) {
+    captchaForms.forEach(function (form) {
+      var submitting = false;
+
+      form.addEventListener("submit", function (event) {
+        if (submitting) { return; }        // second pass, let it through
+        event.preventDefault();
+
+        var action = form.getAttribute("data-recaptcha");
+        var button = form.querySelector("button[type=submit]");
+        var original = button ? button.textContent : null;
+
+        var release = function () {
+          submitting = true;
+          if (button) { button.disabled = false; button.textContent = original; }
+          form.submit();
+        };
+
+        if (button) { button.disabled = true; button.textContent = "Checking..."; }
+
+        if (typeof grecaptcha === "undefined") {
+          release();                        // script blocked, let the server decide
+          return;
+        }
+
+        grecaptcha.ready(function () {
+          grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action: action })
+            .then(function (token) {
+              var field = form.querySelector("input[name='g-recaptcha-response']");
+              if (!field) {
+                field = document.createElement("input");
+                field.type = "hidden";
+                field.name = "g-recaptcha-response";
+                form.appendChild(field);
+              }
+              field.value = token;
+              release();
+            })
+            .catch(function () { release(); });
+        });
+      });
+    });
+  }
+
   /* Show which documents the applicant selected */
   var fileInput = document.getElementById("documents");
   var fileState = document.getElementById("upload-state");

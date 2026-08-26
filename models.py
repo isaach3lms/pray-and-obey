@@ -6,8 +6,10 @@ Two tables:
   applications - every grant application submitted through /apply
 """
 
+import hashlib
 import os
-from datetime import datetime, timezone
+import secrets
+from datetime import datetime, timedelta, timezone
 
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -42,6 +44,12 @@ def utcnow():
     return datetime.now(timezone.utc)
 
 
+def hash_token(token: str) -> str:
+    """Tokens are random enough that a plain SHA-256 is sufficient here, and
+    it keeps lookup a single indexed query."""
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
 # ---------------------------------------------------------------------------
 # Users
 # ---------------------------------------------------------------------------
@@ -53,7 +61,14 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     name = db.Column(db.String(120), nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
+    # Null until the person completes an invite, so an invited account cannot
+    # be signed into before its password is set.
+    password_hash = db.Column(db.String(255))
+
+    # Only the SHA-256 of the token is stored. A database leak therefore does
+    # not hand an attacker a working password-set link.
+    invite_token_hash = db.Column(db.String(64), index=True)
+    invite_expires_at = db.Column(UTCDateTime)
     is_active_user = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(UTCDateTime, default=utcnow, nullable=False)
     last_login_at = db.Column(UTCDateTime)
@@ -62,7 +77,30 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(raw)
 
     def check_password(self, raw: str) -> bool:
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, raw)
+
+    @property
+    def has_password(self) -> bool:
+        return bool(self.password_hash)
+
+    def issue_invite(self, hours: int = 72) -> str:
+        """Generate a single-use link token. Returns the plain token, which is
+        the only time it exists in readable form."""
+        token = secrets.token_urlsafe(32)
+        self.invite_token_hash = hash_token(token)
+        self.invite_expires_at = utcnow() + timedelta(hours=hours)
+        return token
+
+    def clear_invite(self) -> None:
+        self.invite_token_hash = None
+        self.invite_expires_at = None
+
+    def invite_is_valid(self) -> bool:
+        if not self.invite_token_hash or not self.invite_expires_at:
+            return False
+        return self.invite_expires_at > utcnow()
 
     @property
     def is_active(self) -> bool:

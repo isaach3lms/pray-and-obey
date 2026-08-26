@@ -231,6 +231,37 @@ Crossway's Standard Use Guidelines permit quoting the ESV in digital formats up 
 
 ---
 
+## Spam protection
+
+Three independent layers on the application form. The portal login carries reCAPTCHA as well, against credential stuffing.
+
+### reCAPTCHA v3
+
+These keys are **v3**, not v2: invisible, no checkbox, and scored 0.0 to 1.0 where lower is more bot-like. Verified against the live API, which returned `score: 0.9, action: submit`.
+
+| Variable | Purpose |
+|---|---|
+| `RECAPTCHA_SITE_KEY` | Public key, rendered in the page |
+| `RECAPTCHA_SECRET_KEY` | Server key. Never sent to the browser. |
+| `RECAPTCHA_MIN_SCORE` | Rejection threshold, default 0.5 |
+
+Leave both keys blank and verification is skipped entirely, which is what local development wants.
+
+**Tokens are minted at submit time, not on page load.** A v3 token expires after roughly two minutes and this application takes about thirty to complete, so a token issued on page load would always be dead. The submit handler requests a fresh token, waits for it, then submits. If a token still expires, the applicant gets a plain message telling them to submit again rather than a generic failure.
+
+**Fails open when Google is unreachable, closed on a low score.** A network blip between the server and Google should not cost a real grant application, and the honeypot and timing checks still apply in that case. A low score or a mismatched action is a real signal and is rejected.
+
+**Action is checked, not just the score.** A token minted for the login form cannot be replayed against the application form.
+
+### The other two layers
+
+- **Honeypot.** A hidden field that bots fill and humans never see. Silently accepted and discarded, so the bot believes it succeeded.
+- **Timing gate.** Submissions faster than `FORM_MIN_SECONDS` are dropped the same way.
+
+Both are logged at INFO level, so Render logs show the volume being caught.
+
+---
+
 ## Form protection
 
 Two layers, both server-side. No third-party captcha, no external requests, no user friction.

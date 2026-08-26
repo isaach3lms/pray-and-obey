@@ -9,7 +9,7 @@
     <h1>Sign in.</h1>
     <p class="auth__intro">This area is for Pray and Obey Ministries team members reviewing grant applications.</p>
 
-    <form method="post" action="{{ url_for('portal_login') }}" class="auth__form">
+    <form method="post" action="{{ url_for('portal_login') }}" class="auth__form" data-recaptcha="login">
       <div class="field">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" autocomplete="username" required>

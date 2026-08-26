@@ -34,7 +34,7 @@
 </section>
 
 <div class="wrap">
-  <form class="form-shell" method="post" action="{{ url_for('apply_for_funding') }}" enctype="multipart/form-data" novalidate>
+  <form class="form-shell" method="post" action="{{ url_for('apply_for_funding') }}" enctype="multipart/form-data" data-recaptcha="apply" novalidate>
 
     <input type="hidden" name="form_started" value="{{ form_started }}">
     <div class="hp-field" aria-hidden="true">
